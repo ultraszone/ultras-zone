@@ -1,5 +1,3 @@
-bash
-
 cat /mnt/user-data/outputs/ultras-zone.jsx
 Output
 
