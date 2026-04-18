@@ -29,8 +29,6 @@ const MATCHES = [
     ]
   },
   {
-    {
-    {
     id:3, status:"LIVE", time:"67'",
     league:"Serie A", leagueShort:"SA", leagueColor:"#024494",
     home:{name:"Roma", short:"ROM", badge:"🟡🔴"},
@@ -41,9 +39,6 @@ const MATCHES = [
       {id:1,user:"Marco R.",flag:"🇮🇹",av:"MR",col:"#7b2a1a",text:"ATALANTA DESTROYING ROMA TONIGHT 🔥",time:"66'",likes:41,hot:true},
       {id:2,user:"Luca B.",flag:"🇮🇹",av:"LB",col:"#1a2a7b",text:"Lookman is unstoppable this season",time:"64'",likes:28},
     ]
-  },
-    ]
-  },
   },
   {
     id:4, status:"UPCOMING", time:"23:00",
@@ -123,7 +118,6 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .mc-viewers{font-size:11px;font-weight:600;color:var(--muted);display:flex;align-items:center;gap:5px;}
 .mc-vdot{width:5px;height:5px;background:var(--green);border-radius:50%;}
 .mc-cmts{margin-left:auto;font-size:11px;color:var(--muted);}
-.match-screen{}
 .ms-header{padding:14px 16px;display:flex;align-items:center;gap:12px;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .back{width:36px;height:36px;background:var(--bg3);border:1px solid var(--border);border-radius:4px;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:18px;color:var(--white);}
 .ms-info{flex:1;}
@@ -182,7 +176,6 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .notify-btn{margin-top:18px;background:rgba(68,138,255,.1);border:1px solid rgba(68,138,255,.3);border-radius:4px;padding:10px 24px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);cursor:pointer;}
 .notify-btn.notified{border-color:var(--green);color:var(--green);background:rgba(0,200,83,.1);}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#b71c1c;color:#fff;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 20px;border-radius:3px;z-index:9999;white-space:nowrap;}
-@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
 `;
 
 export default function UltrasZone() {
@@ -199,7 +192,7 @@ export default function UltrasZone() {
   const [poll, setPoll] = useState(null);
   const [pollN, setPollN] = useState([58, 27, 15]);
   const [notified, setNotified] = useState({});
-  const [matchTime, setMatchTime] = useState({ 1: 73, 2: 38, 3: 12 });
+  const [matchTime, setMatchTime] = useState({ 1: 73, 2: 38, 3: 67 });
   const autoRef = useRef(0);
 
   useEffect(() => {
@@ -330,95 +323,93 @@ export default function UltrasZone() {
     <>
       <style>{S}</style>
       <div className="app">
-        <div className="match-screen">
-          <div className="ms-header">
-            <button className="back" onClick={goBack}>←</button>
-            <div className="ms-info"><div className="ms-league">{active.league}</div><div className="ms-teams">{active.home.name} – {active.away.name}</div></div>
-            {active.status === "LIVE" && <div className="live-pill">Live</div>}
+        <div className="ms-header">
+          <button className="back" onClick={goBack}>←</button>
+          <div className="ms-info"><div className="ms-league">{active.league}</div><div className="ms-teams">{active.home.name} – {active.away.name}</div></div>
+          {active.status === "LIVE" && <div className="live-pill">Live</div>}
+        </div>
+        {active.status === "UPCOMING" ? (
+          <div className="upcoming-card">
+            <div className="upcoming-time">{active.time}</div>
+            <div className="upcoming-sub">{active.home.name} · {active.away.name}</div>
+            <button className={`notify-btn${notified[active.id] ? " notified" : ""}`} onClick={() => { setNotified(p => ({ ...p, [active.id]: true })); showToast("We will notify you at kickoff!"); }}>
+              {notified[active.id] ? "Notifications On" : "Notify Me"}
+            </button>
           </div>
-          {active.status === "UPCOMING" ? (
-            <div className="upcoming-card">
-              <div className="upcoming-time">{active.time}</div>
-              <div className="upcoming-sub">{active.home.name} · {active.away.name}</div>
-              <button className={`notify-btn${notified[active.id] ? " notified" : ""}`} onClick={() => { setNotified(p => ({ ...p, [active.id]: true })); showToast("We will notify you at kickoff!"); }}>
-                {notified[active.id] ? "Notifications On" : "Notify Me"}
-              </button>
+        ) : (
+          <div className="score-card">
+            <div className="sc-inner">
+              <div className="sc-team"><div className="sc-badge">{active.home.badge}</div><div className="sc-name">{active.home.name}</div></div>
+              <div className="sc-mid"><div className="sc-score">{active.score[0]}–{active.score[1]}</div>{active.status === "LIVE" ? <div className="sc-time-live">{matchTime[active.id] || active.time}</div> : <div className="sc-time-ft">FULL TIME</div>}</div>
+              <div className="sc-team"><div className="sc-badge">{active.away.badge}</div><div className="sc-name">{active.away.name}</div></div>
             </div>
-          ) : (
-            <div className="score-card">
-              <div className="sc-inner">
-                <div className="sc-team"><div className="sc-badge">{active.home.badge}</div><div className="sc-name">{active.home.name}</div></div>
-                <div className="sc-mid"><div className="sc-score">{active.score[0]}–{active.score[1]}</div>{active.status === "LIVE" ? <div className="sc-time-live">{matchTime[active.id] || active.time}</div> : <div className="sc-time-ft">FULL TIME</div>}</div>
-                <div className="sc-team"><div className="sc-badge">{active.away.badge}</div><div className="sc-name">{active.away.name}</div></div>
-              </div>
-              {active.stats && (
-                <div className="sc-stats">
-                  {[[active.stats.poss,"Poss"],[active.stats.shots,"Shots"],[active.stats.corners,"Corners"],[active.stats.yellow,"Yellow"]].map(([v,l]) => (
-                    <div className="sc-stat" key={l}><div className="sc-stat-val">{v}</div><div className="sc-stat-lbl">{l}</div></div>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
-          {active.status !== "UPCOMING" && (
-            <div className="react-wrap">
-              <div className="react-inner">
-                {reacts.map((r, i) => (
-                  <button key={i} className={`react-btn${r.on ? " on" : ""}`} onClick={() => setReacts(p => p.map((x, j) => j === i ? { ...x, n: x.on ? x.n-1 : x.n+1, on: !x.on } : x))}>
-                    <span>{r.e}</span>{r.n.toLocaleString()}
-                  </button>
+            {active.stats && (
+              <div className="sc-stats">
+                {[[active.stats.poss,"Poss"],[active.stats.shots,"Shots"],[active.stats.corners,"Corners"],[active.stats.yellow,"Yellow"]].map(([v,l]) => (
+                  <div className="sc-stat" key={l}><div className="sc-stat-val">{v}</div><div className="sc-stat-lbl">{l}</div></div>
                 ))}
               </div>
-            </div>
-          )}
-          {active.status !== "UPCOMING" && (
-            <div className="poll">
-              <div className="poll-head">Fan Poll</div>
-              <div className="poll-q">Who wins tonight?</div>
-              <div className="poll-opts">
-                {[active.home.short, active.away.short, "Draw"].map((opt, i) => {
-                  const pct = poll !== null ? Math.round((pollN[i] / pollTotal) * 100) : 0;
-                  return (
-                    <div key={i} className={`poll-opt${poll === i ? " voted" : ""}`} onClick={() => votePoll(i)}>
-                      <div className="bar" style={{ width: poll !== null ? `${pct}%` : "0%" }} />
-                      <div className="poll-inner">{opt}{poll !== null && <span className="poll-pct">{pct}%</span>}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-          <div className="feed-header">
-            <div className="feed-title">The Stands</div>
-            <div className="feed-hr" />
-            {active.status === "LIVE" && <div className="online-pill"><div className="od" />{active.viewers.toLocaleString()} live</div>}
+            )}
           </div>
-          {active.status === "UPCOMING" ? (
-            <div style={{ padding: "24px", textAlign: "center", color: "var(--muted)", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>Comments open at kickoff 💬</div>
-          ) : (
-            <div className="feed">
-              {msgs.map(m => (
-                <div className="msg" key={m.id}>
-                  <div className="msg-av" style={{ background: m.col }}>{m.av}</div>
-                  <div className="msg-body">
-                    <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span>{m.hot && <span className="hot-badge">Hot</span>}<span className="msg-time">{m.time}</span></div>
-                    <div className="msg-text">{m.text}</div>
-                    <div className="msg-actions">
-                      <button className="msg-act" onClick={() => like(active.id, m.id)}>👍 {m.likes}</button>
-                      <button className="msg-act">💬 Reply</button>
-                    </div>
-                  </div>
-                </div>
+        )}
+        {active.status !== "UPCOMING" && (
+          <div className="react-wrap">
+            <div className="react-inner">
+              {reacts.map((r, i) => (
+                <button key={i} className={`react-btn${r.on ? " on" : ""}`} onClick={() => setReacts(p => p.map((x, j) => j === i ? { ...x, n: x.on ? x.n-1 : x.n+1, on: !x.on } : x))}>
+                  <span>{r.e}</span>{r.n.toLocaleString()}
+                </button>
               ))}
             </div>
-          )}
-          {active.status !== "UPCOMING" && (
-            <div className="input-bar">
-              <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Raise your voice from the stands..." />
-              <button className="send" onClick={send}>➤</button>
+          </div>
+        )}
+        {active.status !== "UPCOMING" && (
+          <div className="poll">
+            <div className="poll-head">Fan Poll</div>
+            <div className="poll-q">Who wins tonight?</div>
+            <div className="poll-opts">
+              {[active.home.short, active.away.short, "Draw"].map((opt, i) => {
+                const pct = poll !== null ? Math.round((pollN[i] / pollTotal) * 100) : 0;
+                return (
+                  <div key={i} className={`poll-opt${poll === i ? " voted" : ""}`} onClick={() => votePoll(i)}>
+                    <div className="bar" style={{ width: poll !== null ? `${pct}%` : "0%" }} />
+                    <div className="poll-inner">{opt}{poll !== null && <span className="poll-pct">{pct}%</span>}</div>
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
+        )}
+        <div className="feed-header">
+          <div className="feed-title">The Stands</div>
+          <div className="feed-hr" />
+          {active.status === "LIVE" && <div className="online-pill"><div className="od" />{active.viewers.toLocaleString()} live</div>}
         </div>
+        {active.status === "UPCOMING" ? (
+          <div style={{ padding: "24px", textAlign: "center", color: "var(--muted)", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>Comments open at kickoff 💬</div>
+        ) : (
+          <div className="feed">
+            {msgs.map(m => (
+              <div className="msg" key={m.id}>
+                <div className="msg-av" style={{ background: m.col }}>{m.av}</div>
+                <div className="msg-body">
+                  <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span>{m.hot && <span className="hot-badge">Hot</span>}<span className="msg-time">{m.time}</span></div>
+                  <div className="msg-text">{m.text}</div>
+                  <div className="msg-actions">
+                    <button className="msg-act" onClick={() => like(active.id, m.id)}>👍 {m.likes}</button>
+                    <button className="msg-act">💬 Reply</button>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+        {active.status !== "UPCOMING" && (
+          <div className="input-bar">
+            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Raise your voice from the stands..." />
+            <button className="send" onClick={send}>➤</button>
+          </div>
+        )}
         {toast && <div className="toast">{toast}</div>}
       </div>
     </>
