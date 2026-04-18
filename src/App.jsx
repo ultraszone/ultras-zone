@@ -1,60 +1,55 @@
 import { useState, useEffect, useRef } from "react";
+import { initializeApp } from "firebase/app";
+import { getDatabase, ref, push, onValue, serverTimestamp } from "firebase/database";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyBHxmw1g5w2nXm7bUP_zdPFiyQegi5nLPY",
+  authDomain: "ultras-zone.firebaseapp.com",
+  databaseURL: "https://ultras-zone-default-rtdb.firebaseio.com",
+  projectId: "ultras-zone",
+  storageBucket: "ultras-zone.firebasestorage.app",
+  messagingSenderId: "391767236040",
+  appId: "1:391767236040:web:bd3486b661ea73596874fd"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getDatabase(app);
 
 const BANNED = ["nigger","nigga","chink","spic","kike","wetback","raghead","coon","gook","faggot","beaner","negro"];
 const isRacist = t => BANNED.some(w => t.toLowerCase().includes(w));
 
 const MATCHES = [
   {
-    id:1, status:"LIVE", time:"73'",
-    league:"UEFA Champions League", leagueShort:"UCL", leagueColor:"#f5c518",
+    id:"match1", status:"LIVE", time:"73'",
+    league:"UEFA Champions League", leagueColor:"#f5c518",
     home:{name:"Real Madrid", short:"RMA", badge:"🤍"},
     away:{name:"Barcelona", short:"BAR", badge:"🔵"},
     score:[2,1], viewers:18420,
     stats:{poss:"61%", shots:9, corners:4, yellow:3},
-    comments:[
-      {id:1,user:"Carlos M.",flag:"🇧🇷",av:"CM",col:"#7b1e1e",text:"BELLINGHAM IS UNREAL TONIGHT 🔥🔥🔥",time:"72'",likes:84,hot:true},
-      {id:2,user:"Ahmed K.",flag:"🇸🇦",av:"AK",col:"#1a3a6b",text:"Real Madrid is making history tonight",time:"70'",likes:31},
-      {id:3,user:"Jake T.",flag:"🇺🇸",av:"JT",col:"#1a5c2a",text:"Vinicius does that one more time and it's a red 😤",time:"68'",likes:47,hot:true},
-    ]
   },
   {
-    id:2, status:"LIVE", time:"38'",
-    league:"Premier League", leagueShort:"PL", leagueColor:"#3b0082",
+    id:"match2", status:"LIVE", time:"38'",
+    league:"Premier League", leagueColor:"#3b0082",
     home:{name:"Man City", short:"MCI", badge:"🩵"},
     away:{name:"Arsenal", short:"ARS", badge:"❤️"},
     score:[1,2], viewers:11230,
     stats:{poss:"54%", shots:6, corners:2, yellow:1},
-    comments:[
-      {id:1,user:"Emma S.",flag:"🇬🇧",av:"ES",col:"#1a4a3a",text:"SAKA HAT-TRICK TONIGHT 🔴",time:"37'",likes:55,hot:true},
-    ]
   },
   {
-    id:3, status:"LIVE", time:"67'",
-    league:"Serie A", leagueShort:"SA", leagueColor:"#024494",
+    id:"match3", status:"LIVE", time:"67'",
+    league:"Serie A", leagueColor:"#024494",
     home:{name:"Roma", short:"ROM", badge:"🟡🔴"},
     away:{name:"Atalanta", short:"ATA", badge:"🔵⚫"},
     score:[1,2], viewers:6540,
     stats:{poss:"52%", shots:7, corners:3, yellow:2},
-    comments:[
-      {id:1,user:"Marco R.",flag:"🇮🇹",av:"MR",col:"#7b2a1a",text:"ATALANTA DESTROYING ROMA TONIGHT 🔥",time:"66'",likes:41,hot:true},
-      {id:2,user:"Luca B.",flag:"🇮🇹",av:"LB",col:"#1a2a7b",text:"Lookman is unstoppable this season",time:"64'",likes:28},
-    ]
   },
   {
-    id:4, status:"UPCOMING", time:"23:00",
-    league:"MLS", leagueShort:"MLS", leagueColor:"#002b5c",
+    id:"match4", status:"UPCOMING", time:"23:00",
+    league:"MLS", leagueColor:"#002b5c",
     home:{name:"Inter Miami", short:"MIA", badge:"🌸"},
     away:{name:"LA Galaxy", short:"LAG", badge:"⭐"},
-    score:null, viewers:0, stats:null, comments:[]
+    score:null, viewers:0, stats:null,
   },
-];
-
-const AUTO_MSGS = [
-  {user:"Totti F.",flag:"🇮🇹",av:"TF",col:"#7b1a1a",text:"The stands are on fire tonight! 🔥"},
-  {user:"Sergio P.",flag:"🇦🇷",av:"SP",col:"#1a7b3a",text:"If Messi was here it would be 5-0 already 😂"},
-  {user:"Marcus O.",flag:"🇳🇬",av:"MO",col:"#7b5a1a",text:"Best match of the season! Historic night"},
-  {user:"Yuki N.",flag:"🇯🇵",av:"YN",col:"#3a1a7b",text:"Football would be so much better without VAR"},
-  {user:"Dario C.",flag:"🇧🇷",av:"DC",col:"#1a7b6a",text:"GOOOAL! Going crazy!!! ⚽⚽⚽"},
 ];
 
 const REACTIONS = [
@@ -69,6 +64,9 @@ const REACTIONS = [
   {e:"🚩",l:"Foul!",n:334},
 ];
 
+const FLAGS = ["🇺🇸","🇧🇷","🇮🇹","🇪🇸","🇩🇪","🇫🇷","🇦🇷","🇳🇬","🇯🇵","🇹🇷","🇬🇧","🇵🇹","🇲🇦","🇸🇦","🇷🇺"];
+const COLORS = ["#7b1e1e","#1a3a6b","#1a5c2a","#3a1a6b","#6b3a1a","#1a4a3a","#4a1a6b","#6b1a3a","#1a6b5a","#4a3a1a"];
+
 const S = `
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap');
 :root{--bg:#06080b;--bg2:#0d1117;--bg3:#141b24;--border:#1e2d3d;--red:#e53935;--gold:#ffc107;--white:#eaf0f7;--muted:#4a5e72;--green:#00c853;--blue:#448aff;--font:'Barlow',sans-serif;--display:'Oswald',sans-serif;--cond:'Barlow Condensed',sans-serif;}
@@ -80,9 +78,10 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .splash-logo .dot{color:var(--red);}
 .splash-logo .zone{color:var(--gold);}
 .splash-line{width:80%;height:3px;background:linear-gradient(90deg,transparent,var(--red),var(--gold),transparent);margin:14px 0;}
-.splash-sub{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:48px;}
-.splash-enter{background:var(--red);color:#fff;border:none;padding:16px 56px;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;}
-.splash-stats{display:flex;gap:32px;margin-top:40px;}
+.splash-sub{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
+.splash-enter{background:var(--red);color:#fff;border:none;padding:16px 56px;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;margin-bottom:16px;}
+.name-input{background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:10px 16px;font-size:14px;color:var(--white);font-family:var(--font);outline:none;width:240px;text-align:center;margin-bottom:32px;}
+.splash-stats{display:flex;gap:32px;}
 .splash-stat{text-align:center;}
 .splash-stat-val{font-family:var(--display);font-size:28px;font-weight:700;color:var(--gold);}
 .splash-stat-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
@@ -169,31 +168,30 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .msg-act{font-size:12px;color:var(--muted);cursor:pointer;background:none;border:none;font-family:var(--cond);font-weight:700;letter-spacing:1px;display:flex;align-items:center;gap:4px;padding:0;text-transform:uppercase;}
 .input-bar{padding:10px 14px 16px;display:flex;gap:9px;border-top:1px solid var(--border);background:var(--bg);position:sticky;bottom:0;}
 .input-bar input{flex:1;background:var(--bg2);border:1px solid var(--border);border-radius:4px;padding:11px 16px;font-size:14px;color:var(--white);font-family:var(--font);outline:none;}
-.send{width:44px;height:44px;background:var(--red);border:none;border-radius:4px;cursor:pointer;font-size:18px;}
+.send{width:44px;height:44px;background:var(--red);border:none;border-radius:4px;cursor:pointer;font-size:18px;color:#fff;}
 .upcoming-card{margin:14px;background:var(--bg2);border:1px solid var(--border);border-top:3px solid var(--blue);border-radius:8px;padding:28px 20px;text-align:center;}
 .upcoming-time{font-family:var(--display);font-size:56px;font-weight:700;letter-spacing:6px;color:var(--blue);line-height:1;}
 .upcoming-sub{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:2px;color:var(--muted);margin-top:8px;text-transform:uppercase;}
 .notify-btn{margin-top:18px;background:rgba(68,138,255,.1);border:1px solid rgba(68,138,255,.3);border-radius:4px;padding:10px 24px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);cursor:pointer;}
 .notify-btn.notified{border-color:var(--green);color:var(--green);background:rgba(0,200,83,.1);}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#b71c1c;color:#fff;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 20px;border-radius:3px;z-index:9999;white-space:nowrap;}
+.loading{text-align:center;padding:20px;color:var(--muted);font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
 `;
 
 export default function UltrasZone() {
   const [screen, setScreen] = useState("splash");
   const [active, setActive] = useState(null);
-  const [mdata, setMdata] = useState(() => {
-    const d = {};
-    MATCHES.forEach(m => { d[m.id] = [...m.comments]; });
-    return d;
-  });
+  const [comments, setComments] = useState({});
   const [reacts, setReacts] = useState(REACTIONS.map(r => ({ ...r, on: false })));
   const [input, setInput] = useState("");
   const [toast, setToast] = useState(null);
   const [poll, setPoll] = useState(null);
   const [pollN, setPollN] = useState([58, 27, 15]);
   const [notified, setNotified] = useState({});
-  const [matchTime, setMatchTime] = useState({ 1: 73, 2: 38, 3: 67 });
-  const autoRef = useRef(0);
+  const [matchTime, setMatchTime] = useState({ match1: 73, match2: 38, match3: 67 });
+  const [userName, setUserName] = useState("");
+  const [tempName, setTempName] = useState("");
+  const unsubRef = useRef(null);
 
   useEffect(() => {
     const t = setInterval(() => {
@@ -207,38 +205,51 @@ export default function UltrasZone() {
   }, []);
 
   useEffect(() => {
-    if (screen !== "match" || !active || active.status === "UPCOMING") return;
-    const t = setInterval(() => {
-      const m = AUTO_MSGS[autoRef.current % AUTO_MSGS.length];
-      autoRef.current++;
-      setMdata(p => ({
-        ...p,
-        [active.id]: [{ id: Date.now(), ...m, time: "now", likes: 0 }, ...(p[active.id] || [])].slice(0, 50)
-      }));
-    }, 4500);
-    return () => clearInterval(t);
-  }, [screen, active]);
+    if (!active || active.status === "UPCOMING") return;
+    if (unsubRef.current) unsubRef.current();
+    const commentsRef = ref(db, `comments/${active.id}`);
+    const unsub = onValue(commentsRef, snap => {
+      const data = snap.val();
+      if (data) {
+        const list = Object.values(data).sort((a, b) => b.ts - a.ts).slice(0, 50);
+        setComments(p => ({ ...p, [active.id]: list }));
+      } else {
+        setComments(p => ({ ...p, [active.id]: [] }));
+      }
+    });
+    unsubRef.current = unsub;
+    return () => unsub();
+  }, [active]);
 
   const openMatch = m => { setActive(m); setScreen("match"); };
   const goBack = () => { setScreen("home"); setActive(null); };
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(null), 3500); };
 
-  const send = () => {
+  const enterApp = () => {
+    if (!tempName.trim()) { showToast("Enter your name first!"); return; }
+    setUserName(tempName.trim());
+    setScreen("home");
+  };
+
+  const send = async () => {
     if (!input.trim()) return;
     if (isRacist(input)) {
-      showToast("RACIST CONTENT REMOVED — NO PLACE IN ULTRAS.ZONE");
+      showToast("RACIST CONTENT REMOVED");
       setInput("");
       return;
     }
-    setMdata(p => ({
-      ...p,
-      [active.id]: [{ id: Date.now(), user: "You", flag: "🇺🇸", av: "YOU", col: "#7b1e1e", text: input.trim(), time: "now", likes: 0 }, ...(p[active.id] || [])]
-    }));
+    const flag = FLAGS[Math.floor(Math.random() * FLAGS.length)];
+    const col = COLORS[Math.floor(Math.random() * COLORS.length)];
+    const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+    await push(ref(db, `comments/${active.id}`), {
+      user: userName,
+      flag, col, av: initials,
+      text: input.trim(),
+      time: `${matchTime[active.id] || active.time}'`,
+      likes: 0,
+      ts: Date.now()
+    });
     setInput("");
-  };
-
-  const like = (mid, cid) => {
-    setMdata(p => ({ ...p, [mid]: p[mid].map(c => c.id === cid ? { ...c, likes: c.likes + 1 } : c) }));
   };
 
   const votePoll = i => {
@@ -247,11 +258,10 @@ export default function UltrasZone() {
     setPollN(p => p.map((n, j) => j === i ? n + 1 : n));
   };
 
-  const today = new Date().toLocaleDateString("en-US", { weekday: "short", day: "numeric", month: "short" }).toUpperCase();
   const live = MATCHES.filter(m => m.status === "LIVE");
   const other = MATCHES.filter(m => m.status !== "LIVE");
   const pollTotal = pollN.reduce((a, b) => a + b, 0);
-  const msgs = active ? (mdata[active.id] || []) : [];
+  const msgs = active ? (comments[active.id] || []) : [];
 
   if (screen === "splash") return (
     <>
@@ -260,8 +270,9 @@ export default function UltrasZone() {
         <div className="splash">
           <div className="splash-logo">ULTRAS<span className="dot">.</span><span className="zone">ZONE</span></div>
           <div className="splash-line" />
-          <div className="splash-sub">The Voice of the Fans · Fire of the Stands</div>
-          <button className="splash-enter" onClick={() => setScreen("home")}>ENTER THE ZONE</button>
+          <div className="splash-sub">The Voice of the Fans</div>
+          <input className="name-input" placeholder="Enter your name..." value={tempName} onChange={e => setTempName(e.target.value)} onKeyDown={e => e.key === "Enter" && enterApp()} />
+          <button className="splash-enter" onClick={enterApp}>ENTER THE ZONE</button>
           <div className="splash-stats">
             <div className="splash-stat"><div className="splash-stat-val">50M+</div><div className="splash-stat-lbl">Global Fans</div></div>
             <div className="splash-stat"><div className="splash-stat-val">{live.length}</div><div className="splash-stat-lbl">Live Now</div></div>
@@ -295,7 +306,10 @@ export default function UltrasZone() {
                 <div className="mc-center"><div className="mc-score">{m.score[0]}–{m.score[1]}</div><div className="mc-status-live">{matchTime[m.id] || m.time}</div></div>
                 <div className="mc-team right"><div className="mc-badge">{m.away.badge}</div><div className="mc-name">{m.away.name}</div></div>
               </div>
-              <div className="mc-footer"><div className="mc-viewers"><div className="mc-vdot" />{m.viewers.toLocaleString()} watching</div><div className="mc-cmts">💬 {(mdata[m.id] || []).length}</div></div>
+              <div className="mc-footer">
+                <div className="mc-viewers"><div className="mc-vdot" />{m.viewers.toLocaleString()} watching</div>
+                <div className="mc-cmts">💬 {(comments[m.id] || []).length}</div>
+              </div>
             </div>
           ))}
         </div>
@@ -365,7 +379,7 @@ export default function UltrasZone() {
         )}
         {active.status !== "UPCOMING" && (
           <div className="poll">
-            <div className="poll-head">Fan Poll</div>
+            <div className="poll-head">⚡ Fan Poll</div>
             <div className="poll-q">Who wins tonight?</div>
             <div className="poll-opts">
               {[active.home.short, active.away.short, "Draw"].map((opt, i) => {
@@ -389,16 +403,13 @@ export default function UltrasZone() {
           <div style={{ padding: "24px", textAlign: "center", color: "var(--muted)", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>Comments open at kickoff 💬</div>
         ) : (
           <div className="feed">
-            {msgs.map(m => (
-              <div className="msg" key={m.id}>
+            {msgs.length === 0 && <div className="loading">Be the first to comment! 🔥</div>}
+            {msgs.map((m, i) => (
+              <div className="msg" key={i}>
                 <div className="msg-av" style={{ background: m.col }}>{m.av}</div>
                 <div className="msg-body">
-                  <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span>{m.hot && <span className="hot-badge">Hot</span>}<span className="msg-time">{m.time}</span></div>
+                  <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span><span className="msg-time">{m.time}</span></div>
                   <div className="msg-text">{m.text}</div>
-                  <div className="msg-actions">
-                    <button className="msg-act" onClick={() => like(active.id, m.id)}>👍 {m.likes}</button>
-                    <button className="msg-act">💬 Reply</button>
-                  </div>
                 </div>
               </div>
             ))}
