@@ -32,17 +32,18 @@ const S = `
 @import url('https://fonts.googleapis.com/css2?family=Permanent+Marker&family=Barlow+Condensed:wght@600;700;800&family=Barlow:wght@400;500;600;700&family=Oswald:wght@500;600;700&display=swap');
 
 :root {
-  --bg: #04060a;
-  --bg2: #080d14;
-  --bg3: #0d1520;
-  --border: #162030;
+  --bg: #1a0a0a;
+  --bg2: #220d0d;
+  --bg3: #2a1010;
+  --border: #3d1a1a;
   --yellow: #f5c518;
   --navy: #0d2a5e;
   --turq: #00d4ff;
   --white: #ffffff;
-  --muted: #6a7f95;
+  --muted: #a07070;
   --green: #00e676;
   --red: #e53935;
+  --brick: #8b2020;
   --font: 'Barlow', sans-serif;
   --cond: 'Barlow Condensed', sans-serif;
   --display: 'Oswald', sans-serif;
@@ -53,30 +54,42 @@ const S = `
 body { background: var(--bg); color: var(--white); font-family: var(--font); }
 .app { max-width: 430px; margin: 0 auto; min-height: 100vh; background: var(--bg); }
 
-/* ── CROWD BACKGROUND ── */
-.crowd-bg {
-  background-color: var(--bg);
+/* ── OLD TRAFFORD RED BRICK WALL ── */
+.brick-bg {
+  background-color: #1a0808;
   background-image:
-    /* crowd silhouettes row 1 */
-    repeating-linear-gradient(90deg,
-      transparent 0px, transparent 12px,
-      rgba(255,255,255,0.06) 12px, rgba(255,255,255,0.06) 14px,
-      transparent 14px, transparent 24px,
-      rgba(255,255,255,0.04) 24px, rgba(255,255,255,0.04) 28px,
-      transparent 28px, transparent 40px,
-      rgba(255,255,255,0.07) 40px, rgba(255,255,255,0.07) 42px
+    /* mortar horizontal lines */
+    repeating-linear-gradient(
+      180deg,
+      transparent 0px,
+      transparent 18px,
+      rgba(0,0,0,0.7) 18px,
+      rgba(0,0,0,0.7) 22px
     ),
-    /* tribune rows */
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 16px,
-      rgba(13,42,94,0.4) 16px, rgba(13,42,94,0.4) 20px,
-      transparent 20px, transparent 34px,
-      rgba(8,25,60,0.3) 34px, rgba(8,25,60,0.3) 38px
+    /* mortar vertical lines - row 1 (offset 0) */
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px,
+      transparent 38px,
+      rgba(0,0,0,0.7) 38px,
+      rgba(0,0,0,0.7) 42px
     ),
-    /* stadium lights glow */
-    radial-gradient(ellipse at 20% 0%, rgba(245,197,24,0.12) 0%, transparent 40%),
-    radial-gradient(ellipse at 80% 0%, rgba(245,197,24,0.12) 0%, transparent 40%),
-    radial-gradient(ellipse at 50% 50%, rgba(0,212,255,0.04) 0%, transparent 60%);
+    /* brick color variation */
+    repeating-linear-gradient(
+      135deg,
+      rgba(180,40,20,0.15) 0px,
+      rgba(120,20,10,0.1) 20px,
+      rgba(160,35,15,0.12) 40px,
+      rgba(140,25,10,0.08) 60px
+    ),
+    /* base brick color */
+    linear-gradient(180deg, #2a0a0a 0%, #1e0808 50%, #220a0a 100%);
+  background-size: 100% 22px, 42px 44px, 80px 80px, 100% 100%;
+}
+
+/* Extra brick texture overlay */
+.brick-bg::before {
+  content: none;
 }
 
 /* ── SPLASH ── */
@@ -84,34 +97,35 @@ body { background: var(--bg); color: var(--white); font-family: var(--font); }
   min-height: 100vh;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
   position: relative; overflow: hidden;
-  background-color: #04060a;
+  background-color: #1a0808;
   background-image:
-    /* crowd dots pattern */
-    radial-gradient(circle, rgba(255,255,255,0.08) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px),
-    /* tribune rows */
-    repeating-linear-gradient(180deg,
+    repeating-linear-gradient(
+      180deg,
       transparent 0px, transparent 18px,
-      rgba(13,42,94,0.5) 18px, rgba(13,42,94,0.5) 22px,
-      transparent 22px, transparent 36px,
-      rgba(8,25,60,0.35) 36px, rgba(8,25,60,0.35) 40px
+      rgba(0,0,0,0.65) 18px, rgba(0,0,0,0.65) 22px
     ),
-    /* lights */
-    radial-gradient(ellipse at 15% 5%, rgba(245,197,24,0.25) 0%, transparent 35%),
-    radial-gradient(ellipse at 85% 5%, rgba(245,197,24,0.25) 0%, transparent 35%),
-    radial-gradient(ellipse at 50% 60%, rgba(0,212,255,0.08) 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 100%, rgba(13,42,94,0.6) 0%, transparent 50%);
-  background-size: 30px 30px, 60px 60px, 100% 100%, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
-  background-position: 0 0, 15px 15px, 0 0, 0 0, 0 0, 0 0, 0 0;
+    repeating-linear-gradient(
+      90deg,
+      transparent 0px, transparent 38px,
+      rgba(0,0,0,0.65) 38px, rgba(0,0,0,0.65) 42px
+    ),
+    repeating-linear-gradient(
+      135deg,
+      rgba(180,40,20,0.2) 0px, rgba(120,20,10,0.15) 20px,
+      rgba(160,35,15,0.18) 40px, rgba(100,15,5,0.1) 60px
+    ),
+    radial-gradient(ellipse at 50% 40%, rgba(229,57,53,0.15) 0%, transparent 60%),
+    radial-gradient(ellipse at 20% 10%, rgba(245,197,24,0.1) 0%, transparent 35%),
+    radial-gradient(ellipse at 80% 10%, rgba(245,197,24,0.1) 0%, transparent 35%),
+    linear-gradient(180deg, #1a0808 0%, #200a0a 100%);
+  background-size: 100% 22px, 42px 44px, 80px 80px, 100% 100%, 100% 100%, 100% 100%, 100% 100%;
 }
 
 .splash-flares {
-  position: absolute; top: 0; left: 0; right: 0; height: 200px; pointer-events: none;
+  position: absolute; top: 0; left: 0; right: 0; height: 160px; pointer-events: none;
   background:
-    radial-gradient(ellipse 80px 120px at 15% 0%, rgba(245,197,24,0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 80px 120px at 85% 0%, rgba(245,197,24,0.4) 0%, transparent 70%),
-    radial-gradient(ellipse 40px 60px at 40% 0%, rgba(255,255,255,0.15) 0%, transparent 70%),
-    radial-gradient(ellipse 40px 60px at 60% 0%, rgba(255,255,255,0.15) 0%, transparent 70%);
+    radial-gradient(ellipse 100px 100px at 15% 0%, rgba(245,197,24,0.3) 0%, transparent 70%),
+    radial-gradient(ellipse 100px 100px at 85% 0%, rgba(245,197,24,0.3) 0%, transparent 70%);
 }
 
 .splash-content { position: relative; z-index: 1; display: flex; flex-direction: column; align-items: center; padding: 0 20px; }
@@ -125,117 +139,115 @@ body { background: var(--bg); color: var(--white); font-family: var(--font); }
   position: relative;
   margin-bottom: 4px;
 }
-.graffiti-logo .u { color: var(--yellow); text-shadow: 3px 3px 0 rgba(0,0,0,0.8), -1px -1px 0 rgba(13,42,94,0.6), 0 0 20px rgba(245,197,24,0.4); }
+.graffiti-logo .u {
+  color: var(--yellow);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.9), -1px -1px 0 rgba(80,20,0,0.8), 0 0 20px rgba(245,197,24,0.5);
+}
 .graffiti-logo .dot { color: var(--white); font-size: 40px; }
-.graffiti-logo .z { color: var(--turq); text-shadow: 3px 3px 0 rgba(0,0,0,0.8), -1px -1px 0 rgba(0,80,100,0.6), 0 0 20px rgba(0,212,255,0.4); }
+.graffiti-logo .z {
+  color: var(--turq);
+  text-shadow: 3px 3px 0 rgba(0,0,0,0.9), -1px -1px 0 rgba(0,60,80,0.8), 0 0 20px rgba(0,212,255,0.5);
+}
 
 .splash-wall-line {
   width: 100%;
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--navy), var(--turq), var(--yellow), var(--turq), var(--navy), transparent);
+  height: 3px;
+  background: linear-gradient(90deg, transparent, var(--brick), var(--yellow), var(--turq), var(--yellow), var(--brick), transparent);
   margin: 10px 0 6px;
 }
 .splash-tag {
   font-family: var(--graffiti);
   font-size: 13px;
-  color: rgba(255,255,255,0.4);
+  color: rgba(255,200,150,0.5);
   letter-spacing: 2px;
   margin-bottom: 32px;
 }
 
 .name-input {
-  background: rgba(13,42,94,0.4);
-  border: 2px solid rgba(0,212,255,0.3);
-  border-radius: 6px;
+  background: rgba(80,20,10,0.5);
+  border: 2px solid rgba(245,197,24,0.4);
+  border-radius: 4px;
   padding: 12px 20px;
-  font-size: 16px;
-  color: var(--white);
-  font-family: var(--cond);
-  font-weight: 700;
-  letter-spacing: 1px;
-  outline: none;
-  width: 260px;
-  text-align: center;
-  margin-bottom: 14px;
+  font-size: 16px; color: var(--white);
+  font-family: var(--cond); font-weight: 700; letter-spacing: 1px;
+  outline: none; width: 260px; text-align: center; margin-bottom: 14px;
   transition: border-color .2s, box-shadow .2s;
 }
-.name-input::placeholder { color: rgba(255,255,255,0.3); }
-.name-input:focus { border-color: var(--turq); box-shadow: 0 0 16px rgba(0,212,255,0.25); }
+.name-input::placeholder { color: rgba(255,200,150,0.4); }
+.name-input:focus { border-color: var(--yellow); box-shadow: 0 0 16px rgba(245,197,24,0.3); }
 
 .splash-enter {
-  background: linear-gradient(135deg, var(--navy) 0%, #0a1e50 100%);
+  background: linear-gradient(135deg, #8b1a1a 0%, #6b1010 100%);
   color: var(--yellow);
   border: 2px solid var(--yellow);
   padding: 14px 48px;
-  font-family: var(--graffiti);
-  font-size: 22px;
-  letter-spacing: 2px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all .2s;
-  margin-bottom: 36px;
-  text-shadow: 0 0 10px rgba(245,197,24,0.4);
-  box-shadow: 0 0 20px rgba(245,197,24,0.15);
+  font-family: var(--graffiti); font-size: 22px; letter-spacing: 2px;
+  cursor: pointer; border-radius: 4px; transition: all .2s; margin-bottom: 36px;
+  text-shadow: 0 0 10px rgba(245,197,24,0.5);
+  box-shadow: 0 0 20px rgba(139,26,26,0.5);
 }
-.splash-enter:hover { background: var(--navy); box-shadow: 0 0 30px rgba(245,197,24,0.3); transform: scale(1.03); }
+.splash-enter:hover { background: linear-gradient(135deg,#a02020,#801515); box-shadow: 0 0 30px rgba(245,197,24,0.3); transform: scale(1.03); }
 
 .splash-stats { display: flex; gap: 32px; }
 .splash-stat { text-align: center; }
-.splash-stat-val { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--turq); }
+.splash-stat-val { font-family: var(--display); font-size: 26px; font-weight: 700; color: var(--yellow); }
 .splash-stat-lbl { font-size: 10px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase; color: var(--muted); margin-top: 2px; }
 
 /* ── HEADER ── */
 .header {
   padding: 12px 18px;
   display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid rgba(0,212,255,0.15);
-  background: rgba(4,6,10,0.96);
+  border-bottom: 2px solid rgba(0,0,0,0.8);
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.6) 18px, rgba(0,0,0,0.6) 22px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 38px, rgba(0,0,0,0.6) 38px, rgba(0,0,0,0.6) 42px),
+    linear-gradient(180deg, #2a0808 0%, #1e0606 100%);
+  background-size: 100% 22px, 42px 44px, 100% 100%;
   position: sticky; top: 0; z-index: 100;
-  backdrop-filter: blur(12px);
 }
 
-.header-logo {
-  font-family: var(--graffiti);
-  font-size: 28px;
-  letter-spacing: 1px;
-  line-height: 1;
-}
-.header-logo .u { color: var(--yellow); text-shadow: 1px 1px 0 rgba(0,0,0,0.8); }
+.header-logo { font-family: var(--graffiti); font-size: 28px; letter-spacing: 1px; line-height: 1; }
+.header-logo .u { color: var(--yellow); text-shadow: 2px 2px 0 rgba(0,0,0,0.9); }
 .header-logo .dot { color: var(--white); font-size: 20px; }
-.header-logo .z { color: var(--turq); text-shadow: 1px 1px 0 rgba(0,0,0,0.8); }
+.header-logo .z { color: var(--turq); text-shadow: 2px 2px 0 rgba(0,0,0,0.9); }
 
 .live-pill {
   display: flex; align-items: center; gap: 5px;
-  background: rgba(229,57,53,0.15); border: 1px solid rgba(229,57,53,0.4);
+  background: rgba(139,26,26,0.6); border: 1px solid rgba(229,57,53,0.5);
   border-radius: 3px; padding: 4px 10px;
   font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 2px;
-  color: #ff7070; text-transform: uppercase;
+  color: #ff8a8a; text-transform: uppercase;
 }
 .live-pill::before { content: ''; width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse 1s infinite; }
 
 /* ── SECTION ── */
 .section-header { display: flex; align-items: center; gap: 10px; padding: 14px 16px 8px; }
 .section-tag { font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--muted); }
-.section-hr { flex: 1; height: 1px; background: var(--border); }
-.live-tag { display: flex; align-items: center; gap: 5px; font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #ff7070; text-transform: uppercase; }
+.section-hr { flex: 1; height: 1px; background: rgba(0,0,0,0.6); }
+.live-tag { display: flex; align-items: center; gap: 5px; font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 2px; color: #ff8a8a; text-transform: uppercase; }
 .live-tag::before { content: ''; width: 6px; height: 6px; background: var(--red); border-radius: 50%; animation: pulse 1s infinite; }
 
 /* ── MATCH CARDS ── */
-.match-list { padding: 0 14px; display: flex; flex-direction: column; gap: 8px; padding-bottom: 24px; }
+.match-list { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; padding-bottom: 24px; }
 
 .match-card {
-  background: linear-gradient(135deg, rgba(13,42,94,0.4) 0%, rgba(8,13,20,0.95) 100%);
-  border: 1px solid rgba(0,212,255,0.12);
-  border-radius: 10px; overflow: hidden;
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.4) 18px, rgba(0,0,0,0.4) 22px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 38px, rgba(0,0,0,0.4) 38px, rgba(0,0,0,0.4) 42px),
+    linear-gradient(135deg, #2d0e0e 0%, #200808 100%);
+  background-size: 100% 22px, 42px 44px, 100% 100%;
+  border: 1px solid rgba(0,0,0,0.7);
+  border-radius: 8px; overflow: hidden;
   cursor: pointer; position: relative; transition: all .18s;
-  border-left: 3px solid rgba(0,212,255,0.3);
+  border-left: 4px solid #8b2020;
+  box-shadow: inset 0 1px 0 rgba(255,100,50,0.1);
 }
-.match-card:hover { border-color: rgba(0,212,255,0.5); border-left-color: var(--turq); transform: translateX(3px); box-shadow: 0 0 20px rgba(0,212,255,0.1); }
+.match-card:hover { border-left-color: var(--yellow); transform: translateX(3px); box-shadow: inset 0 1px 0 rgba(245,197,24,0.15), 0 4px 15px rgba(0,0,0,0.5); }
 .match-card:active { transform: scale(.98); }
 
 .mc-league { display: flex; align-items: center; gap: 6px; padding: 8px 14px 0 14px; }
-.mc-league-dot { width: 6px; height: 6px; border-radius: 50%; flex-shrink: 0; background: var(--turq); }
-.mc-league-name { font-family: var(--cond); font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--turq); opacity: 0.8; }
+.mc-league-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--yellow); flex-shrink: 0; }
+.mc-league-name { font-family: var(--cond); font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(245,197,24,0.7); }
 
 .mc-body { display: flex; align-items: center; padding: 10px 14px 12px; gap: 8px; }
 .mc-team { flex: 1; display: flex; align-items: center; gap: 8px; }
@@ -245,82 +257,73 @@ body { background: var(--bg); color: var(--white); font-family: var(--font); }
   width: 36px; height: 36px; border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
   font-size: 12px; font-weight: 800; font-family: var(--cond);
-  background: rgba(13,42,94,0.6); border: 1px solid rgba(0,212,255,0.2);
+  background: rgba(80,20,10,0.7); border: 1px solid rgba(200,80,40,0.3);
   flex-shrink: 0; color: var(--white);
 }
 .mc-name { font-family: var(--cond); font-size: 14px; font-weight: 800; text-transform: uppercase; color: var(--white); letter-spacing: 0.5px; }
 .mc-team.right .mc-name { text-align: right; }
 
-.mc-center { text-align: center; min-width: 80px; }
-.mc-score { font-family: var(--display); font-size: 32px; font-weight: 700; letter-spacing: 6px; color: var(--yellow); line-height: 1; text-shadow: 0 0 10px rgba(245,197,24,0.3); }
+.mc-center { text-align: center; min-width: 86px; }
+.mc-score { font-family: var(--display); font-size: 32px; font-weight: 700; letter-spacing: 6px; color: var(--yellow); line-height: 1; text-shadow: 0 0 12px rgba(245,197,24,0.4); }
 
 .mc-time-badge {
   display: inline-flex; align-items: center; gap: 4px;
-  background: var(--red); color: #fff;
-  font-family: var(--cond); font-size: 10px; font-weight: 800;
-  padding: 2px 8px; border-radius: 2px; margin-top: 4px; text-transform: uppercase;
+  background: rgba(139,26,26,0.9); color: #fff;
+  font-family: var(--cond); font-size: 11px; font-weight: 800;
+  padding: 3px 10px; border-radius: 3px; margin-top: 4px; text-transform: uppercase;
+  border: 1px solid rgba(229,57,53,0.5);
 }
-.mc-time-badge::before { content: ''; width: 4px; height: 4px; background: #fff; border-radius: 50%; animation: pulse .8s infinite; }
+.mc-time-badge::before { content: ''; width: 5px; height: 5px; background: #ff6b6b; border-radius: 50%; animation: pulse .8s infinite; }
 
-.mc-footer { border-top: 1px solid rgba(0,212,255,0.08); padding: 7px 14px; display: flex; align-items: center; }
+.mc-footer { border-top: 1px solid rgba(0,0,0,0.5); padding: 7px 14px; display: flex; align-items: center; }
 .mc-viewers { font-size: 11px; font-weight: 600; color: var(--muted); display: flex; align-items: center; gap: 5px; }
 .mc-vdot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
-.mc-cmts { margin-left: auto; font-size: 11px; color: var(--turq); opacity: 0.7; }
+.mc-cmts { margin-left: auto; font-size: 11px; color: rgba(245,197,24,0.6); }
 
-/* ── MATCH SCREEN HEADER ── */
+/* ── MATCH SCREEN ── */
 .ms-header {
   padding: 12px 16px; display: flex; align-items: center; gap: 12px;
-  border-bottom: 1px solid rgba(0,212,255,0.15);
-  background: rgba(4,6,10,0.96); position: sticky; top: 0; z-index: 100;
-  backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(0,0,0,0.8);
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.6) 18px, rgba(0,0,0,0.6) 22px),
+    linear-gradient(180deg, #2a0808, #1a0606);
+  background-size: 100% 22px, 100% 100%;
+  position: sticky; top: 0; z-index: 100;
 }
-.back {
-  width: 36px; height: 36px;
-  background: rgba(13,42,94,0.5); border: 1px solid rgba(0,212,255,0.2);
-  border-radius: 6px; cursor: pointer;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 18px; color: var(--turq); transition: all .15s;
-}
-.back:hover { background: rgba(13,42,94,0.8); }
+.back { width: 36px; height: 36px; background: rgba(80,20,10,0.7); border: 1px solid rgba(200,80,40,0.3); border-radius: 4px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--yellow); transition: all .15s; }
+.back:hover { background: rgba(100,25,15,0.9); }
 .ms-info { flex: 1; }
-.ms-league { font-family: var(--cond); font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--turq); opacity: 0.8; margin-bottom: 2px; }
+.ms-league { font-family: var(--cond); font-size: 10px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: rgba(245,197,24,0.7); margin-bottom: 2px; }
 .ms-teams { font-family: var(--cond); font-size: 17px; font-weight: 800; text-transform: uppercase; color: var(--white); }
 
 /* ── SCORE CARD ── */
 .score-card {
-  margin: 14px; border-radius: 12px; overflow: hidden;
+  margin: 14px; border-radius: 10px; overflow: hidden;
   position: relative;
-  border: 1px solid rgba(0,212,255,0.15); border-top: 3px solid var(--yellow);
+  border: 1px solid rgba(0,0,0,0.8); border-top: 4px solid var(--yellow);
+  box-shadow: 0 4px 20px rgba(0,0,0,0.5);
 }
 .score-card-bg {
   position: absolute; inset: 0;
-  background-color: #061228;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px),
-    radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px),
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 14px,
-      rgba(13,42,94,0.5) 14px, rgba(13,42,94,0.5) 17px,
-      transparent 17px, transparent 28px,
-      rgba(8,25,60,0.35) 28px, rgba(8,25,60,0.35) 31px
-    ),
-    radial-gradient(ellipse at 50% 0%, rgba(245,197,24,0.1) 0%, transparent 60%);
-  background-size: 20px 20px, 40px 40px, 100% 100%, 100% 100%;
-  background-position: 0 0, 10px 10px, 0 0, 0 0;
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.45) 18px, rgba(0,0,0,0.45) 22px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 38px, rgba(0,0,0,0.45) 38px, rgba(0,0,0,0.45) 42px),
+    radial-gradient(ellipse at 50% 0%, rgba(245,197,24,0.12) 0%, transparent 60%),
+    linear-gradient(180deg, #3a1010 0%, #250a0a 100%);
+  background-size: 100% 22px, 42px 44px, 100% 100%, 100% 100%;
 }
 .score-inner { display: flex; align-items: center; padding: 22px 16px 18px; gap: 8px; position: relative; z-index: 1; }
 .sc-team { flex: 1; text-align: center; }
-.sc-badge {
-  width: 58px; height: 58px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 15px; font-weight: 800; font-family: var(--cond);
-  background: rgba(13,42,94,0.6); border: 2px solid rgba(0,212,255,0.2);
-  margin: 0 auto 10px; color: var(--white);
-}
-.sc-name { font-family: var(--cond); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.75); }
+.sc-badge { width: 58px; height: 58px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 15px; font-weight: 800; font-family: var(--cond); background: rgba(80,20,10,0.7); border: 2px solid rgba(200,80,40,0.3); margin: 0 auto 10px; color: var(--white); }
+.sc-name { font-family: var(--cond); font-size: 14px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,220,180,0.85); }
 .sc-mid { text-align: center; }
-.sc-score { font-family: var(--display); font-size: 64px; font-weight: 700; letter-spacing: 8px; color: var(--yellow); line-height: 1; text-shadow: 0 0 20px rgba(245,197,24,0.4); }
-.sc-time { background: var(--red); color: #fff; font-family: var(--cond); font-size: 12px; font-weight: 800; padding: 3px 12px; border-radius: 2px; margin-top: 6px; display: inline-block; }
+.sc-score { font-family: var(--display); font-size: 64px; font-weight: 700; letter-spacing: 8px; color: var(--yellow); line-height: 1; text-shadow: 0 0 20px rgba(245,197,24,0.5); }
+.sc-time {
+  background: rgba(139,26,26,0.9); color: #fff;
+  font-family: var(--cond); font-size: 13px; font-weight: 800;
+  padding: 4px 14px; border-radius: 3px; margin-top: 6px; display: inline-block;
+  border: 1px solid rgba(229,57,53,0.5);
+}
 
 /* ── REACTIONS ── */
 .react-wrap { padding: 0 14px 14px; overflow-x: auto; scrollbar-width: none; }
@@ -328,42 +331,39 @@ body { background: var(--bg); color: var(--white); font-family: var(--font); }
 .react-inner { display: flex; gap: 8px; width: max-content; }
 .react-btn {
   display: flex; align-items: center; gap: 6px;
-  background: rgba(13,42,94,0.4); border: 1px solid rgba(0,212,255,0.15);
+  background: rgba(60,15,10,0.7); border: 1px solid rgba(150,50,30,0.4);
   border-radius: 20px; padding: 7px 14px; cursor: pointer;
   color: var(--white); font-family: var(--cond); font-size: 13px; font-weight: 700;
   white-space: nowrap; transition: all .15s;
 }
-.react-btn:hover, .react-btn.on { background: rgba(13,42,94,0.7); border-color: var(--turq); color: var(--turq); transform: translateY(-2px); }
+.react-btn:hover, .react-btn.on { background: rgba(100,20,10,0.8); border-color: var(--yellow); color: var(--yellow); transform: translateY(-2px); }
 
 /* ── POLL ── */
 .poll {
-  margin: 0 14px 14px; border-radius: 10px; overflow: hidden;
-  border: 1px solid rgba(245,197,24,0.2); border-left: 3px solid var(--yellow);
+  margin: 0 14px 14px; border-radius: 8px; overflow: hidden;
+  border: 1px solid rgba(0,0,0,0.7); border-left: 4px solid var(--yellow);
   position: relative;
 }
 .poll-bg {
   position: absolute; inset: 0;
-  background-color: #060d1a;
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px),
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 14px,
-      rgba(13,42,94,0.4) 14px, rgba(13,42,94,0.4) 17px
-    );
-  background-size: 25px 25px, 100% 100%;
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.4) 18px, rgba(0,0,0,0.4) 22px),
+    repeating-linear-gradient(90deg, transparent 0px, transparent 38px, rgba(0,0,0,0.4) 38px, rgba(0,0,0,0.4) 42px),
+    linear-gradient(135deg, #2a0f0a 0%, #1e0808 100%);
+  background-size: 100% 22px, 42px 44px, 100% 100%;
 }
 .poll-inner-wrap { position: relative; z-index: 1; padding: 14px 16px; }
 .poll-head { font-family: var(--cond); font-size: 10px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--yellow); margin-bottom: 6px; }
 .poll-q { font-size: 16px; font-weight: 700; color: var(--white); margin-bottom: 12px; }
 .poll-opts { display: flex; gap: 8px; }
 .poll-opt {
-  flex: 1; background: rgba(13,42,94,0.5); border: 1px solid rgba(0,212,255,0.15);
-  border-radius: 8px; padding: 12px 6px; text-align: center; cursor: pointer;
+  flex: 1; background: rgba(60,15,10,0.7); border: 1px solid rgba(150,50,30,0.4);
+  border-radius: 6px; padding: 12px 6px; text-align: center; cursor: pointer;
   font-family: var(--cond); font-size: 13px; font-weight: 800; color: var(--white);
   position: relative; overflow: hidden; text-transform: uppercase; letter-spacing: 0.5px; transition: all .2s;
 }
-.poll-opt:hover { border-color: var(--turq); }
-.poll-opt-bar { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg,rgba(0,212,255,0.25),rgba(0,212,255,0.08)); transition: width .6s ease; border-radius: 8px; }
+.poll-opt:hover { border-color: var(--yellow); }
+.poll-opt-bar { position: absolute; left: 0; top: 0; bottom: 0; background: linear-gradient(90deg,rgba(245,197,24,0.25),rgba(245,197,24,0.08)); transition: width .6s ease; border-radius: 6px; }
 .poll-opt.voted { border-color: var(--turq); color: var(--turq); }
 .poll-opt.winner { border-color: var(--yellow); color: var(--yellow); }
 .poll-opt-content { position: relative; z-index: 1; }
@@ -373,50 +373,49 @@ body { background: var(--bg); color: var(--white); font-family: var(--font); }
 
 /* ── FEED ── */
 .feed-wrap {
-  background-image:
-    radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px),
-    repeating-linear-gradient(180deg,
-      transparent 0px, transparent 18px,
-      rgba(13,42,94,0.25) 18px, rgba(13,42,94,0.25) 21px,
-      transparent 21px, transparent 36px,
-      rgba(8,25,60,0.2) 36px, rgba(8,25,60,0.2) 39px
-    );
-  background-size: 30px 30px, 100% 100%;
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.3) 18px, rgba(0,0,0,0.3) 22px),
+    linear-gradient(180deg, #1e0808 0%, #180606 100%);
+  background-size: 100% 22px, 100% 100%;
 }
 .feed-header { display: flex; align-items: center; gap: 10px; padding: 12px 16px 8px; }
-.feed-title { font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--turq); opacity: 0.8; }
-.feed-hr { flex: 1; height: 1px; background: rgba(0,212,255,0.15); }
+.feed-title { font-family: var(--cond); font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: rgba(245,197,24,0.8); }
+.feed-hr { flex: 1; height: 1px; background: rgba(0,0,0,0.6); }
 .online-pill { display: flex; align-items: center; gap: 5px; font-family: var(--cond); font-size: 11px; font-weight: 700; color: var(--muted); }
 .od { width: 5px; height: 5px; background: var(--green); border-radius: 50%; animation: pulse 2s infinite; }
 
-.feed { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: var(--border) transparent; }
+.feed { padding: 0 14px; display: flex; flex-direction: column; gap: 10px; max-height: 340px; overflow-y: auto; scrollbar-width: thin; scrollbar-color: rgba(0,0,0,0.5) transparent; }
 .msg { display: flex; gap: 10px; animation: fadeIn .3s ease; }
-.msg-av { width: 36px; height: 36px; border-radius: 6px; display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-size: 14px; font-weight: 800; flex-shrink: 0; border: 1px solid rgba(0,212,255,0.15); color: var(--white); }
+.msg-av { width: 36px; height: 36px; border-radius: 4px; display: flex; align-items: center; justify-content: center; font-family: var(--cond); font-size: 14px; font-weight: 800; flex-shrink: 0; border: 1px solid rgba(150,50,30,0.3); color: var(--white); }
 .msg-body { flex: 1; }
 .msg-top { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
 .msg-name { font-family: var(--cond); font-size: 13px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.5px; color: var(--yellow); }
 .msg-flag { font-size: 13px; }
 .msg-time { font-size: 10px; color: var(--muted); margin-left: auto; font-family: var(--cond); font-weight: 700; }
-.msg-text { font-size: 14px; color: rgba(255,255,255,0.85); line-height: 1.45; }
+.msg-text { font-size: 14px; color: rgba(255,220,190,0.85); line-height: 1.45; }
 
 /* ── INPUT ── */
 .input-bar {
   padding: 10px 14px 16px; display: flex; gap: 9px;
-  border-top: 1px solid rgba(0,212,255,0.12);
-  background: rgba(4,6,10,0.97); position: sticky; bottom: 0; backdrop-filter: blur(12px);
+  border-top: 2px solid rgba(0,0,0,0.7);
+  background:
+    repeating-linear-gradient(180deg, transparent 0px, transparent 18px, rgba(0,0,0,0.5) 18px, rgba(0,0,0,0.5) 22px),
+    linear-gradient(180deg, #2a0808, #1a0606);
+  background-size: 100% 22px, 100% 100%;
+  position: sticky; bottom: 0;
 }
 .input-bar input {
   flex: 1;
-  background: rgba(13,42,94,0.35); border: 1px solid rgba(0,212,255,0.2);
-  border-radius: 24px; padding: 11px 18px; font-size: 14px;
-  color: var(--white); font-family: var(--font); outline: none; transition: border-color .15s, box-shadow .15s;
+  background: rgba(60,15,10,0.6); border: 1px solid rgba(150,50,30,0.4);
+  border-radius: 24px; padding: 11px 18px; font-size: 14px; color: var(--white);
+  font-family: var(--font); outline: none; transition: border-color .15s, box-shadow .15s;
 }
-.input-bar input:focus { border-color: var(--turq); box-shadow: 0 0 12px rgba(0,212,255,0.15); }
-.input-bar input::placeholder { color: rgba(255,255,255,0.3); }
-.send { width: 44px; height: 44px; background: linear-gradient(135deg,var(--navy),#0a1e50); border: 1px solid var(--turq); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--turq); flex-shrink: 0; transition: all .15s; }
-.send:hover { background: var(--navy); box-shadow: 0 0 14px rgba(0,212,255,0.3); transform: scale(1.06); }
+.input-bar input:focus { border-color: var(--yellow); box-shadow: 0 0 12px rgba(245,197,24,0.2); }
+.input-bar input::placeholder { color: rgba(255,180,120,0.3); }
+.send { width: 44px; height: 44px; background: linear-gradient(135deg,#8b1a1a,#6b1010); border: 1px solid rgba(245,197,24,0.5); border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 17px; color: var(--yellow); flex-shrink: 0; transition: all .15s; }
+.send:hover { background: linear-gradient(135deg,#a02020,#801515); box-shadow: 0 0 14px rgba(245,197,24,0.3); transform: scale(1.06); }
 
-.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #b71c1c; color: #fff; font-family: var(--cond); font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 10px 20px; border-radius: 3px; z-index: 9999; white-space: nowrap; animation: toastPop .3s ease; }
+.toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: #6b1010; color: #fff; font-family: var(--cond); font-size: 13px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; padding: 10px 20px; border-radius: 3px; z-index: 9999; white-space: nowrap; animation: toastPop .3s ease; border: 1px solid var(--red); }
 .loading { text-align: center; padding: 40px 20px; color: var(--muted); font-family: var(--cond); font-size: 12px; letter-spacing: 2px; text-transform: uppercase; }
 
 @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.4;transform:scale(1.5)} }
@@ -438,6 +437,7 @@ export default function UltrasZone() {
   const [pollData, setPollData] = useState({ 0: 0, 1: 0, 2: 0 });
   const [userName, setUserName] = useState(savedName || "");
   const [tempName, setTempName] = useState("");
+  const [liveMinutes, setLiveMinutes] = useState({});
   const unsubRef = useRef(null);
   const unsubPollRef = useRef(null);
 
@@ -454,7 +454,6 @@ export default function UltrasZone() {
         time: m.elapsed ? `${m.elapsed}'` : "LIVE",
         elapsed: m.elapsed || 0,
         league: m.leagueName || "Football",
-        leagueColor: "#00d4ff",
         home: {
           name: m.home?.name || "Home",
           short: (m.home?.name || "HOM").slice(0,3).toUpperCase(),
@@ -469,14 +468,32 @@ export default function UltrasZone() {
         viewers: Math.floor(Math.random() * 15000) + 1000,
       }));
       setMatches(live);
+      // Initialize live minutes from API
+      const mins = {};
+      live.forEach(m => { mins[m.id] = m.elapsed; });
+      setLiveMinutes(mins);
     } catch(e) { console.error(e); }
     setLoading(false);
   };
 
+  // Tick live minutes every 60 seconds
+  useEffect(() => {
+    const t = setInterval(() => {
+      setLiveMinutes(prev => {
+        const next = { ...prev };
+        Object.keys(next).forEach(id => {
+          if (next[id] < 90) next[id] = next[id] + 1;
+        });
+        return next;
+      });
+    }, 60000);
+    return () => clearInterval(t);
+  }, []);
+
   useEffect(() => {
     if (screen === "home") {
       fetchMatches();
-      const t = setInterval(fetchMatches, 60000);
+      const t = setInterval(fetchMatches, 120000);
       return () => clearInterval(t);
     }
   }, [screen]);
@@ -514,11 +531,7 @@ export default function UltrasZone() {
     return () => unsub();
   }, [active]);
 
-  const openMatch = m => {
-    setActive(m);
-    setScreen("match");
-  };
-
+  const openMatch = m => { setActive(m); setScreen("match"); };
   const goBack = () => { setScreen("home"); setActive(null); };
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(null), 3500); };
 
@@ -536,9 +549,12 @@ export default function UltrasZone() {
     const flag = FLAGS[Math.floor(Math.random() * FLAGS.length)];
     const col = COLORS[Math.floor(Math.random() * COLORS.length)];
     const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
+    const currentMin = active ? (liveMinutes[active.id] || active.elapsed || 0) : 0;
     await push(ref(db, `comments/${active.id}`), {
       user: userName, flag, col, av: initials,
-      text: input.trim(), time: active.time, likes: 0, ts: Date.now()
+      text: input.trim(),
+      time: `${currentMin}'`,
+      likes: 0, ts: Date.now()
     });
     setInput("");
   };
@@ -559,6 +575,7 @@ export default function UltrasZone() {
   const winnerIdx = pollVoted !== null && pollTotal > 0
     ? String(Object.keys(pollData).reduce((a,b) => (pollData[a]||0) >= (pollData[b]||0) ? a : b))
     : null;
+  const activeMin = active ? (liveMinutes[active.id] || active?.elapsed || 0) : 0;
 
   /* ── SPLASH ── */
   if (screen === "splash") return (
@@ -573,13 +590,7 @@ export default function UltrasZone() {
             </div>
             <div className="splash-wall-line" />
             <div className="splash-tag">voice of the fans</div>
-            <input
-              className="name-input"
-              placeholder="What's your name?"
-              value={tempName}
-              onChange={e => setTempName(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && enterApp()}
-            />
+            <input className="name-input" placeholder="What's your name?" value={tempName} onChange={e => setTempName(e.target.value)} onKeyDown={e => e.key==="Enter" && enterApp()} />
             <button className="splash-enter" onClick={enterApp}>ENTER THE ZONE</button>
             <div className="splash-stats">
               <div className="splash-stat"><div className="splash-stat-val">50M+</div><div className="splash-stat-lbl">Global Fans</div></div>
@@ -597,7 +608,7 @@ export default function UltrasZone() {
   if (screen === "home") return (
     <>
       <style>{S}</style>
-      <div className="app crowd-bg">
+      <div className="app brick-bg">
         <div className="header">
           <div className="header-logo">
             <span className="u">ULTRAS</span><span className="dot">.</span><span className="z">ZONE</span>
@@ -607,7 +618,6 @@ export default function UltrasZone() {
             <div style={{fontSize:10,color:"var(--muted)",fontFamily:"var(--cond)",letterSpacing:1}}>{today}</div>
           </div>
         </div>
-
         {loading ? (
           <div className="loading">⚽ Loading live matches...</div>
         ) : matches.length === 0 ? (
@@ -621,12 +631,7 @@ export default function UltrasZone() {
             </div>
             <div className="match-list">
               {matches.map(m => (
-                <div
-                  className="match-card"
-                  key={m.id}
-                  onClick={() => openMatch(m)}
-                  style={{cursor:"pointer"}}
-                >
+                <div className="match-card" key={m.id} onClick={() => openMatch(m)}>
                   <div className="mc-league">
                     <div className="mc-league-dot" />
                     <div className="mc-league-name">{m.league}</div>
@@ -638,7 +643,7 @@ export default function UltrasZone() {
                     </div>
                     <div className="mc-center">
                       <div className="mc-score">{m.score[0]}–{m.score[1]}</div>
-                      <div className="mc-time-badge">{m.time}</div>
+                      <div className="mc-time-badge">{liveMinutes[m.id] || m.elapsed}'</div>
                     </div>
                     <div className="mc-team right">
                       <div className="mc-badge">{m.away.badge}</div>
@@ -663,7 +668,7 @@ export default function UltrasZone() {
   return (
     <>
       <style>{S}</style>
-      <div className="app crowd-bg">
+      <div className="app brick-bg">
         <div className="ms-header">
           <button className="back" onClick={goBack}>←</button>
           <div className="ms-info">
@@ -673,7 +678,6 @@ export default function UltrasZone() {
           <div className="live-pill">Live</div>
         </div>
 
-        {/* Score */}
         <div className="score-card">
           <div className="score-card-bg" />
           <div className="score-inner">
@@ -683,7 +687,7 @@ export default function UltrasZone() {
             </div>
             <div className="sc-mid">
               <div className="sc-score">{active.score[0]}–{active.score[1]}</div>
-              <div className="sc-time">{active.time}</div>
+              <div className="sc-time">{activeMin}'</div>
             </div>
             <div className="sc-team">
               <div className="sc-badge">{active.away.badge}</div>
@@ -692,7 +696,6 @@ export default function UltrasZone() {
           </div>
         </div>
 
-        {/* Reactions */}
         <div className="react-wrap">
           <div className="react-inner">
             {reacts.map((r,i) => (
@@ -704,7 +707,6 @@ export default function UltrasZone() {
           </div>
         </div>
 
-        {/* Poll */}
         <div className="poll">
           <div className="poll-bg" />
           <div className="poll-inner-wrap">
@@ -715,12 +717,9 @@ export default function UltrasZone() {
                 const pct = pollTotal > 0 ? Math.round(((pollData[i]||0)/pollTotal)*100) : 0;
                 const isWinner = winnerIdx !== null && String(i) === winnerIdx;
                 return (
-                  <div
-                    key={i}
-                    className={`poll-opt${pollVoted===i?" voted":""}${isWinner?" winner":""}`}
+                  <div key={i} className={`poll-opt${pollVoted===i?" voted":""}${isWinner?" winner":""}`}
                     onClick={() => votePoll(i)}
-                    style={{cursor:pollVoted!==null?"default":"pointer"}}
-                  >
+                    style={{cursor:pollVoted!==null?"default":"pointer"}}>
                     <div className="poll-opt-bar" style={{width:pollVoted!==null?`${pct}%`:"0%"}} />
                     <div className="poll-opt-content">
                       <span>{opt}</span>
@@ -737,7 +736,6 @@ export default function UltrasZone() {
           </div>
         </div>
 
-        {/* Feed */}
         <div className="feed-wrap">
           <div className="feed-header">
             <div className="feed-title">🏟️ The Stands</div>
@@ -762,17 +760,10 @@ export default function UltrasZone() {
           </div>
         </div>
 
-        {/* Input */}
         <div className="input-bar">
-          <input
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            onKeyDown={e => e.key==="Enter" && send()}
-            placeholder="Raise your voice from the stands..."
-          />
+          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key==="Enter"&&send()} placeholder="Raise your voice from the stands..." />
           <button className="send" onClick={send}>➤</button>
         </div>
-
         {toast && <div className="toast">{toast}</div>}
       </div>
     </>
