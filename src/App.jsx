@@ -166,7 +166,7 @@ export default function UltrasZone() {
         }
       });
       const data = await res.json();
-      const live = (data?.response?.live || []).slice(0, 8).map(m => ({
+      const live = (data?.response?.live || []).slice(0, 50).map(m => ({
         id: `match_${m.id}`,
         status: "LIVE",
         time: m.elapsed ? `${m.elapsed}'` : "LIVE",
