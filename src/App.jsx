@@ -1,6 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import { initializeApp } from "firebase/app";
-import { getDatabase, ref, push, onValue, serverTimestamp } from "firebase/database";
+import { getDatabase, ref, push, onValue } from "firebase/database";
 
 const firebaseConfig = {
   apiKey: "AIzaSyBHxmw1g5w2nXm7bUP_zdPFiyQegi5nLPY",
@@ -15,57 +15,20 @@ const firebaseConfig = {
 const app = initializeApp(firebaseConfig);
 const db = getDatabase(app);
 
+const API_KEY = "60958b8d45mshee5408e90b5fb3ap116287jsn6dbc1b620001";
+const API_HOST = "free-api-live-football-data.p.rapidapi.com";
+
 const BANNED = ["nigger","nigga","chink","spic","kike","wetback","raghead","coon","gook","faggot","beaner","negro"];
 const isRacist = t => BANNED.some(w => t.toLowerCase().includes(w));
 
-const MATCHES = [
-  {
-    id:"match1", status:"LIVE", time:"73'",
-    league:"UEFA Champions League", leagueColor:"#f5c518",
-    home:{name:"Real Madrid", short:"RMA", badge:"🤍"},
-    away:{name:"Barcelona", short:"BAR", badge:"🔵"},
-    score:[2,1], viewers:18420,
-    stats:{poss:"61%", shots:9, corners:4, yellow:3},
-  },
-  {
-    id:"match2", status:"LIVE", time:"38'",
-    league:"Premier League", leagueColor:"#3b0082",
-    home:{name:"Man City", short:"MCI", badge:"🩵"},
-    away:{name:"Arsenal", short:"ARS", badge:"❤️"},
-    score:[1,2], viewers:11230,
-    stats:{poss:"54%", shots:6, corners:2, yellow:1},
-  },
-  {
-    id:"match3", status:"LIVE", time:"67'",
-    league:"Serie A", leagueColor:"#024494",
-    home:{name:"Roma", short:"ROM", badge:"🟡🔴"},
-    away:{name:"Atalanta", short:"ATA", badge:"🔵⚫"},
-    score:[1,2], viewers:6540,
-    stats:{poss:"52%", shots:7, corners:3, yellow:2},
-  },
-  {
-    id:"match4", status:"UPCOMING", time:"23:00",
-    league:"MLS", leagueColor:"#002b5c",
-    home:{name:"Inter Miami", short:"MIA", badge:"🌸"},
-    away:{name:"LA Galaxy", short:"LAG", badge:"⭐"},
-    score:null, viewers:0, stats:null,
-  },
-];
-
-const REACTIONS = [
-  {e:"⚽",l:"Goal!",n:2841},
-  {e:"🔥",l:"Fire",n:1923},
-  {e:"😤",l:"Angry",n:1102},
-  {e:"😱",l:"Unreal",n:1567},
-  {e:"🤣",l:"LOL",n:887},
-  {e:"👏",l:"Clap",n:643},
-  {e:"🍺",l:"Cheers!",n:512},
-  {e:"💔",l:"Pain",n:421},
-  {e:"🚩",l:"Foul!",n:334},
-];
-
 const FLAGS = ["🇺🇸","🇧🇷","🇮🇹","🇪🇸","🇩🇪","🇫🇷","🇦🇷","🇳🇬","🇯🇵","🇹🇷","🇬🇧","🇵🇹","🇲🇦","🇸🇦","🇷🇺"];
 const COLORS = ["#7b1e1e","#1a3a6b","#1a5c2a","#3a1a6b","#6b3a1a","#1a4a3a","#4a1a6b","#6b1a3a","#1a6b5a","#4a3a1a"];
+
+const REACTIONS = [
+  {e:"⚽",l:"Goal!",n:2841},{e:"🔥",l:"Fire",n:1923},{e:"😤",l:"Angry",n:1102},
+  {e:"😱",l:"Unreal",n:1567},{e:"🤣",l:"LOL",n:887},{e:"👏",l:"Clap",n:643},
+  {e:"🍺",l:"Cheers!",n:512},{e:"💔",l:"Pain",n:421},{e:"🚩",l:"Foul!",n:334},
+];
 
 const S = `
 @import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Barlow:wght@400;500;600;700&family=Barlow+Condensed:wght@600;700;800&display=swap');
@@ -75,8 +38,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);}
 .splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(ellipse at 20% 50%,rgba(229,57,53,.18) 0%,transparent 60%),radial-gradient(ellipse at 80% 20%,rgba(255,193,7,.08) 0%,transparent 50%),var(--bg);}
 .splash-logo{font-family:var(--display);font-size:64px;font-weight:700;letter-spacing:4px;color:var(--white);line-height:1;}
-.splash-logo .dot{color:var(--red);}
-.splash-logo .zone{color:var(--gold);}
+.splash-logo .dot{color:var(--red);} .splash-logo .zone{color:var(--gold);}
 .splash-line{width:80%;height:3px;background:linear-gradient(90deg,transparent,var(--red),var(--gold),transparent);margin:14px 0;}
 .splash-sub{font-family:var(--cond);font-size:13px;font-weight:700;letter-spacing:5px;text-transform:uppercase;color:var(--muted);margin-bottom:32px;}
 .splash-enter{background:var(--red);color:#fff;border:none;padding:16px 56px;font-family:var(--display);font-size:20px;font-weight:700;letter-spacing:4px;text-transform:uppercase;cursor:pointer;margin-bottom:16px;}
@@ -87,8 +49,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .splash-stat-lbl{font-size:10px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--muted);}
 .header{padding:14px 18px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border);background:var(--bg);position:sticky;top:0;z-index:100;}
 .logo{font-family:var(--display);font-size:26px;font-weight:700;letter-spacing:2px;color:var(--white);}
-.logo .dot{color:var(--red);}
-.logo .zone{color:var(--gold);}
+.logo .dot{color:var(--red);} .logo .zone{color:var(--gold);}
 .live-pill{display:flex;align-items:center;gap:5px;background:rgba(229,57,53,.12);border:1px solid rgba(229,57,53,.3);border-radius:3px;padding:4px 10px;font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:2px;color:var(--red);text-transform:uppercase;}
 .section-header{display:flex;align-items:center;gap:10px;padding:16px 16px 8px;}
 .section-tag{font-family:var(--cond);font-size:11px;font-weight:800;letter-spacing:3px;text-transform:uppercase;color:var(--muted);}
@@ -104,7 +65,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .mc-body{display:flex;align-items:center;padding:10px 14px 12px 16px;gap:8px;}
 .mc-team{flex:1;display:flex;align-items:center;gap:8px;}
 .mc-team.right{flex-direction:row-reverse;}
-.mc-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0;}
+.mc-badge{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;background:var(--bg3);border:1px solid var(--border);flex-shrink:0;font-family:var(--cond);font-weight:800;color:var(--muted);}
 .mc-name{font-family:var(--cond);font-size:15px;font-weight:800;text-transform:uppercase;color:var(--white);}
 .mc-team.right .mc-name{text-align:right;}
 .mc-center{text-align:center;min-width:72px;}
@@ -125,7 +86,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .score-card{margin:14px;background:linear-gradient(135deg,#0f1923 0%,#0a1420 100%);border:1px solid var(--border);border-top:3px solid var(--red);border-radius:8px;overflow:hidden;}
 .sc-inner{display:flex;align-items:center;padding:20px 16px 16px;gap:8px;}
 .sc-team{flex:1;text-align:center;}
-.sc-badge{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:28px;background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);margin:0 auto 10px;}
+.sc-badge{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;font-family:var(--cond);background:rgba(255,255,255,.04);border:2px solid rgba(255,255,255,.08);margin:0 auto 10px;color:var(--muted);}
 .sc-name{font-family:var(--cond);font-size:14px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:#7a93a8;}
 .sc-mid{text-align:center;}
 .sc-score{font-family:var(--display);font-size:62px;font-weight:700;letter-spacing:8px;color:var(--white);line-height:1;}
@@ -175,12 +136,15 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .notify-btn{margin-top:18px;background:rgba(68,138,255,.1);border:1px solid rgba(68,138,255,.3);border-radius:4px;padding:10px 24px;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--blue);cursor:pointer;}
 .notify-btn.notified{border-color:var(--green);color:var(--green);background:rgba(0,200,83,.1);}
 .toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#b71c1c;color:#fff;font-family:var(--cond);font-size:13px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:10px 20px;border-radius:3px;z-index:9999;white-space:nowrap;}
-.loading{text-align:center;padding:20px;color:var(--muted);font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+.loading{text-align:center;padding:40px 20px;color:var(--muted);font-family:var(--cond);font-size:12px;letter-spacing:2px;text-transform:uppercase;}
+.error-msg{text-align:center;padding:20px;color:var(--red);font-family:var(--cond);font-size:12px;letter-spacing:1px;}
 `;
 
 export default function UltrasZone() {
   const [screen, setScreen] = useState("splash");
   const [active, setActive] = useState(null);
+  const [matches, setMatches] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [comments, setComments] = useState({});
   const [reacts, setReacts] = useState(REACTIONS.map(r => ({ ...r, on: false })));
   const [input, setInput] = useState("");
@@ -188,21 +152,46 @@ export default function UltrasZone() {
   const [poll, setPoll] = useState(null);
   const [pollN, setPollN] = useState([58, 27, 15]);
   const [notified, setNotified] = useState({});
-  const [matchTime, setMatchTime] = useState({ match1: 73, match2: 38, match3: 67 });
   const [userName, setUserName] = useState("");
   const [tempName, setTempName] = useState("");
   const unsubRef = useRef(null);
 
-  useEffect(() => {
-    const t = setInterval(() => {
-      setMatchTime(p => {
-        const n = { ...p };
-        Object.keys(n).forEach(k => { if (n[k] < 90) n[k]++; });
-        return n;
+  const fetchMatches = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("https://free-api-live-football-data.p.rapidapi.com/football-current-live", {
+        headers: {
+          "x-rapidapi-key": API_KEY,
+          "x-rapidapi-host": API_HOST
+        }
       });
-    }, 10000);
-    return () => clearInterval(t);
-  }, []);
+      const data = await res.json();
+      const live = (data?.response?.live || []).slice(0, 8).map(m => ({
+        id: `match_${m.id}`,
+        status: "LIVE",
+        time: m.elapsed ? `${m.elapsed}'` : "LIVE",
+        league: m.leagueName || "Football",
+        leagueColor: "#e53935",
+        home: { name: m.home?.name || "Home", short: (m.home?.name || "HOM").slice(0,3).toUpperCase(), badge: (m.home?.name || "H").slice(0,2).toUpperCase() },
+        away: { name: m.away?.name || "Away", short: (m.away?.name || "AWY").slice(0,3).toUpperCase(), badge: (m.away?.name || "A").slice(0,2).toUpperCase() },
+        score: [m.home?.score ?? 0, m.away?.score ?? 0],
+        viewers: Math.floor(Math.random() * 15000) + 1000,
+        stats: null,
+      }));
+      setMatches(live);
+    } catch(e) {
+      console.error(e);
+    }
+    setLoading(false);
+  };
+
+  useEffect(() => {
+    if (screen === "home") {
+      fetchMatches();
+      const t = setInterval(fetchMatches, 60000);
+      return () => clearInterval(t);
+    }
+  }, [screen]);
 
   useEffect(() => {
     if (!active || active.status === "UPCOMING") return;
@@ -221,7 +210,7 @@ export default function UltrasZone() {
     return () => unsub();
   }, [active]);
 
-  const openMatch = m => { setActive(m); setScreen("match"); };
+  const openMatch = m => { setActive(m); setScreen("match"); setPoll(null); setPollN([58,27,15]); };
   const goBack = () => { setScreen("home"); setActive(null); };
   const showToast = msg => { setToast(msg); setTimeout(() => setToast(null), 3500); };
 
@@ -233,21 +222,15 @@ export default function UltrasZone() {
 
   const send = async () => {
     if (!input.trim()) return;
-    if (isRacist(input)) {
-      showToast("RACIST CONTENT REMOVED");
-      setInput("");
-      return;
-    }
+    if (isRacist(input)) { showToast("RACIST CONTENT REMOVED"); setInput(""); return; }
     const flag = FLAGS[Math.floor(Math.random() * FLAGS.length)];
     const col = COLORS[Math.floor(Math.random() * COLORS.length)];
-    const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0, 2);
+    const initials = userName.split(" ").map(w => w[0]).join("").toUpperCase().slice(0,2);
     await push(ref(db, `comments/${active.id}`), {
-      user: userName,
-      flag, col, av: initials,
+      user: userName, flag, col, av: initials,
       text: input.trim(),
-      time: `${matchTime[active.id] || active.time}'`,
-      likes: 0,
-      ts: Date.now()
+      time: active.time,
+      likes: 0, ts: Date.now()
     });
     setInput("");
   };
@@ -255,12 +238,11 @@ export default function UltrasZone() {
   const votePoll = i => {
     if (poll !== null) return;
     setPoll(i);
-    setPollN(p => p.map((n, j) => j === i ? n + 1 : n));
+    setPollN(p => p.map((n,j) => j===i ? n+1 : n));
   };
 
-  const live = MATCHES.filter(m => m.status === "LIVE");
-  const other = MATCHES.filter(m => m.status !== "LIVE");
-  const pollTotal = pollN.reduce((a, b) => a + b, 0);
+  const today = new Date().toLocaleDateString("en-US", { weekday:"short", day:"numeric", month:"short" }).toUpperCase();
+  const pollTotal = pollN.reduce((a,b) => a+b, 0);
   const msgs = active ? (comments[active.id] || []) : [];
 
   if (screen === "splash") return (
@@ -271,12 +253,12 @@ export default function UltrasZone() {
           <div className="splash-logo">ULTRAS<span className="dot">.</span><span className="zone">ZONE</span></div>
           <div className="splash-line" />
           <div className="splash-sub">The Voice of the Fans</div>
-          <input className="name-input" placeholder="Enter your name..." value={tempName} onChange={e => setTempName(e.target.value)} onKeyDown={e => e.key === "Enter" && enterApp()} />
+          <input className="name-input" placeholder="Enter your name..." value={tempName} onChange={e => setTempName(e.target.value)} onKeyDown={e => e.key==="Enter" && enterApp()} />
           <button className="splash-enter" onClick={enterApp}>ENTER THE ZONE</button>
           <div className="splash-stats">
             <div className="splash-stat"><div className="splash-stat-val">50M+</div><div className="splash-stat-lbl">Global Fans</div></div>
-            <div className="splash-stat"><div className="splash-stat-val">{live.length}</div><div className="splash-stat-lbl">Live Now</div></div>
-            <div className="splash-stat"><div className="splash-stat-val">Live</div><div className="splash-stat-lbl">React Now</div></div>
+            <div className="splash-stat"><div className="splash-stat-val">Live</div><div className="splash-stat-lbl">Matches</div></div>
+            <div className="splash-stat"><div className="splash-stat-val">Real</div><div className="splash-stat-lbl">Scores</div></div>
           </div>
         </div>
         {toast && <div className="toast">{toast}</div>}
@@ -290,44 +272,40 @@ export default function UltrasZone() {
       <div className="app">
         <div className="header">
           <div className="logo">ULTRAS<span className="dot">.</span><span className="zone">ZONE</span></div>
-          <div className="live-pill">{live.length} Live</div>
+          <div style={{display:"flex",alignItems:"center",gap:8}}>
+            <div className="live-pill">{matches.length} Live</div>
+            <div style={{fontSize:10,color:"var(--muted)",fontFamily:"var(--cond)",letterSpacing:1}}>{today}</div>
+          </div>
         </div>
-        <div className="section-header">
-          <div className="live-tag">🔴 Live Matches</div>
-          <div className="section-hr" />
-          <div className="section-tag">{live.length} matches</div>
-        </div>
-        <div className="match-list">
-          {live.map(m => (
-            <div className="match-card live-card" key={m.id} onClick={() => openMatch(m)}>
-              <div className="mc-league"><div className="mc-league-dot" style={{ background: m.leagueColor }} /><div className="mc-league-name">{m.league}</div></div>
-              <div className="mc-body">
-                <div className="mc-team"><div className="mc-badge">{m.home.badge}</div><div className="mc-name">{m.home.name}</div></div>
-                <div className="mc-center"><div className="mc-score">{m.score[0]}–{m.score[1]}</div><div className="mc-status-live">{matchTime[m.id] || m.time}</div></div>
-                <div className="mc-team right"><div className="mc-badge">{m.away.badge}</div><div className="mc-name">{m.away.name}</div></div>
-              </div>
-              <div className="mc-footer">
-                <div className="mc-viewers"><div className="mc-vdot" />{m.viewers.toLocaleString()} watching</div>
-                <div className="mc-cmts">💬 {(comments[m.id] || []).length}</div>
-              </div>
+        {loading ? (
+          <div className="loading">⚽ Loading live matches...</div>
+        ) : matches.length === 0 ? (
+          <div className="loading">No live matches right now. Check back soon!</div>
+        ) : (
+          <>
+            <div className="section-header">
+              <div className="live-tag">🔴 Live Matches</div>
+              <div className="section-hr" />
+              <div className="section-tag">{matches.length} matches</div>
             </div>
-          ))}
-        </div>
-        <div className="section-header"><div className="section-hr" /><div className="section-tag">Other Matches</div><div className="section-hr" /></div>
-        <div className="match-list">
-          {other.map(m => (
-            <div className="match-card" key={m.id} onClick={() => openMatch(m)}>
-              <div className="mc-league"><div className="mc-league-dot" style={{ background: m.leagueColor }} /><div className="mc-league-name">{m.league}</div></div>
-              <div className="mc-body">
-                <div className="mc-team"><div className="mc-badge">{m.home.badge}</div><div className="mc-name">{m.home.name}</div></div>
-                <div className="mc-center">
-                  {m.status === "FT" ? <><div className="mc-score">{m.score[0]}–{m.score[1]}</div><span className="mc-status-ft">FULL TIME</span></> : <><div className="mc-status-upcoming">{m.time}</div><span className="mc-kickoff">Upcoming</span></>}
+            <div className="match-list">
+              {matches.map(m => (
+                <div className="match-card live-card" key={m.id} onClick={() => openMatch(m)}>
+                  <div className="mc-league"><div className="mc-league-dot" style={{background:m.leagueColor}} /><div className="mc-league-name">{m.league}</div></div>
+                  <div className="mc-body">
+                    <div className="mc-team"><div className="mc-badge">{m.home.badge}</div><div className="mc-name">{m.home.name}</div></div>
+                    <div className="mc-center"><div className="mc-score">{m.score[0]}–{m.score[1]}</div><div className="mc-status-live">{m.time}</div></div>
+                    <div className="mc-team right"><div className="mc-badge">{m.away.badge}</div><div className="mc-name">{m.away.name}</div></div>
+                  </div>
+                  <div className="mc-footer">
+                    <div className="mc-viewers"><div className="mc-vdot" />{m.viewers.toLocaleString()} watching</div>
+                    <div className="mc-cmts">💬 {(comments[m.id]||[]).length}</div>
+                  </div>
                 </div>
-                <div className="mc-team right"><div className="mc-badge">{m.away.badge}</div><div className="mc-name">{m.away.name}</div></div>
-              </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
         {toast && <div className="toast">{toast}</div>}
       </div>
     </>
@@ -340,87 +318,60 @@ export default function UltrasZone() {
         <div className="ms-header">
           <button className="back" onClick={goBack}>←</button>
           <div className="ms-info"><div className="ms-league">{active.league}</div><div className="ms-teams">{active.home.name} – {active.away.name}</div></div>
-          {active.status === "LIVE" && <div className="live-pill">Live</div>}
+          <div className="live-pill">Live</div>
         </div>
-        {active.status === "UPCOMING" ? (
-          <div className="upcoming-card">
-            <div className="upcoming-time">{active.time}</div>
-            <div className="upcoming-sub">{active.home.name} · {active.away.name}</div>
-            <button className={`notify-btn${notified[active.id] ? " notified" : ""}`} onClick={() => { setNotified(p => ({ ...p, [active.id]: true })); showToast("We will notify you at kickoff!"); }}>
-              {notified[active.id] ? "Notifications On" : "Notify Me"}
-            </button>
+        <div className="score-card">
+          <div className="sc-inner">
+            <div className="sc-team"><div className="sc-badge">{active.home.badge}</div><div className="sc-name">{active.home.name}</div></div>
+            <div className="sc-mid"><div className="sc-score">{active.score[0]}–{active.score[1]}</div><div className="sc-time-live">{active.time}</div></div>
+            <div className="sc-team"><div className="sc-badge">{active.away.badge}</div><div className="sc-name">{active.away.name}</div></div>
           </div>
-        ) : (
-          <div className="score-card">
-            <div className="sc-inner">
-              <div className="sc-team"><div className="sc-badge">{active.home.badge}</div><div className="sc-name">{active.home.name}</div></div>
-              <div className="sc-mid"><div className="sc-score">{active.score[0]}–{active.score[1]}</div>{active.status === "LIVE" ? <div className="sc-time-live">{matchTime[active.id] || active.time}</div> : <div className="sc-time-ft">FULL TIME</div>}</div>
-              <div className="sc-team"><div className="sc-badge">{active.away.badge}</div><div className="sc-name">{active.away.name}</div></div>
-            </div>
-            {active.stats && (
-              <div className="sc-stats">
-                {[[active.stats.poss,"Poss"],[active.stats.shots,"Shots"],[active.stats.corners,"Corners"],[active.stats.yellow,"Yellow"]].map(([v,l]) => (
-                  <div className="sc-stat" key={l}><div className="sc-stat-val">{v}</div><div className="sc-stat-lbl">{l}</div></div>
-                ))}
-              </div>
-            )}
+        </div>
+        <div className="react-wrap">
+          <div className="react-inner">
+            {reacts.map((r,i) => (
+              <button key={i} className={`react-btn${r.on?" on":""}`} onClick={() => setReacts(p => p.map((x,j) => j===i ? {...x,n:x.on?x.n-1:x.n+1,on:!x.on} : x))}>
+                <span>{r.e}</span>{r.n.toLocaleString()}
+              </button>
+            ))}
           </div>
-        )}
-        {active.status !== "UPCOMING" && (
-          <div className="react-wrap">
-            <div className="react-inner">
-              {reacts.map((r, i) => (
-                <button key={i} className={`react-btn${r.on ? " on" : ""}`} onClick={() => setReacts(p => p.map((x, j) => j === i ? { ...x, n: x.on ? x.n-1 : x.n+1, on: !x.on } : x))}>
-                  <span>{r.e}</span>{r.n.toLocaleString()}
-                </button>
-              ))}
-            </div>
+        </div>
+        <div className="poll">
+          <div className="poll-head">⚡ Fan Poll</div>
+          <div className="poll-q">Who wins tonight?</div>
+          <div className="poll-opts">
+            {[active.home.short, active.away.short, "Draw"].map((opt,i) => {
+              const pct = poll!==null ? Math.round((pollN[i]/pollTotal)*100) : 0;
+              return (
+                <div key={i} className={`poll-opt${poll===i?" voted":""}`} onClick={() => votePoll(i)}>
+                  <div className="bar" style={{width:poll!==null?`${pct}%`:"0%"}} />
+                  <div className="poll-inner">{opt}{poll!==null && <span className="poll-pct">{pct}%</span>}</div>
+                </div>
+              );
+            })}
           </div>
-        )}
-        {active.status !== "UPCOMING" && (
-          <div className="poll">
-            <div className="poll-head">⚡ Fan Poll</div>
-            <div className="poll-q">Who wins tonight?</div>
-            <div className="poll-opts">
-              {[active.home.short, active.away.short, "Draw"].map((opt, i) => {
-                const pct = poll !== null ? Math.round((pollN[i] / pollTotal) * 100) : 0;
-                return (
-                  <div key={i} className={`poll-opt${poll === i ? " voted" : ""}`} onClick={() => votePoll(i)}>
-                    <div className="bar" style={{ width: poll !== null ? `${pct}%` : "0%" }} />
-                    <div className="poll-inner">{opt}{poll !== null && <span className="poll-pct">{pct}%</span>}</div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
+        </div>
         <div className="feed-header">
           <div className="feed-title">The Stands</div>
           <div className="feed-hr" />
-          {active.status === "LIVE" && <div className="online-pill"><div className="od" />{active.viewers.toLocaleString()} live</div>}
+          <div className="online-pill"><div className="od" />{active.viewers.toLocaleString()} live</div>
         </div>
-        {active.status === "UPCOMING" ? (
-          <div style={{ padding: "24px", textAlign: "center", color: "var(--muted)", fontSize: 13, fontWeight: 700, textTransform: "uppercase", letterSpacing: 2 }}>Comments open at kickoff 💬</div>
-        ) : (
-          <div className="feed">
-            {msgs.length === 0 && <div className="loading">Be the first to comment! 🔥</div>}
-            {msgs.map((m, i) => (
-              <div className="msg" key={i}>
-                <div className="msg-av" style={{ background: m.col }}>{m.av}</div>
-                <div className="msg-body">
-                  <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span><span className="msg-time">{m.time}</span></div>
-                  <div className="msg-text">{m.text}</div>
-                </div>
+        <div className="feed">
+          {msgs.length===0 && <div className="loading">Be the first to comment! 🔥</div>}
+          {msgs.map((m,i) => (
+            <div className="msg" key={i}>
+              <div className="msg-av" style={{background:m.col}}>{m.av}</div>
+              <div className="msg-body">
+                <div className="msg-top"><span className="msg-name">{m.user}</span><span className="msg-flag">{m.flag}</span><span className="msg-time">{m.time}</span></div>
+                <div className="msg-text">{m.text}</div>
               </div>
-            ))}
-          </div>
-        )}
-        {active.status !== "UPCOMING" && (
-          <div className="input-bar">
-            <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key === "Enter" && send()} placeholder="Raise your voice from the stands..." />
-            <button className="send" onClick={send}>➤</button>
-          </div>
-        )}
+            </div>
+          ))}
+        </div>
+        <div className="input-bar">
+          <input value={input} onChange={e => setInput(e.target.value)} onKeyDown={e => e.key==="Enter" && send()} placeholder="Raise your voice from the stands..." />
+          <button className="send" onClick={send}>➤</button>
+        </div>
         {toast && <div className="toast">{toast}</div>}
       </div>
     </>
