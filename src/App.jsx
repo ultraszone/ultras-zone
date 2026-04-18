@@ -29,11 +29,18 @@ const MATCHES = [
     ]
   },
   {
-    id:3, status:"UPCOMING", time:"20:45",
+    {
+    id:3, status:"LIVE", time:"67'",
     league:"Serie A", leagueShort:"SA", leagueColor:"#024494",
-    home:{name:"AC Milan", short:"MIL", badge:"⚫🔴"},
-    away:{name:"Juventus", short:"JUV", badge:"⚫⚪"},
-    score:null, viewers:0, stats:null, comments:[]
+    home:{name:"Roma", short:"ROM", badge:"🟡🔴"},
+    away:{name:"Atalanta", short:"ATA", badge:"🔵⚫"},
+    score:[1,2], viewers:6540,
+    stats:{poss:"52%", shots:7, corners:3, yellow:2},
+    comments:[
+      {id:1,user:"Marco R.",flag:"🇮🇹",av:"MR",col:"#7b2a1a",text:"ATALANTA DESTROYING ROMA TONIGHT 🔥",time:"66'",likes:41,hot:true},
+      {id:2,user:"Luca B.",flag:"🇮🇹",av:"LB",col:"#1a2a7b",text:"Lookman is unstoppable this season",time:"64'",likes:28},
+    ]
+  },
   },
   {
     id:4, status:"UPCOMING", time:"23:00",
