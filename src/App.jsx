@@ -30,6 +30,7 @@ const MATCHES = [
   },
   {
     {
+    {
     id:3, status:"LIVE", time:"67'",
     league:"Serie A", leagueShort:"SA", leagueColor:"#024494",
     home:{name:"Roma", short:"ROM", badge:"🟡🔴"},
@@ -39,6 +40,8 @@ const MATCHES = [
     comments:[
       {id:1,user:"Marco R.",flag:"🇮🇹",av:"MR",col:"#7b2a1a",text:"ATALANTA DESTROYING ROMA TONIGHT 🔥",time:"66'",likes:41,hot:true},
       {id:2,user:"Luca B.",flag:"🇮🇹",av:"LB",col:"#1a2a7b",text:"Lookman is unstoppable this season",time:"64'",likes:28},
+    ]
+  },
     ]
   },
   },
