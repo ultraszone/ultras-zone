@@ -7,7 +7,7 @@ const firebaseConfig = {
   authDomain: "ultras-zone.firebaseapp.com",
   databaseURL: "https://ultras-zone-default-rtdb.firebaseio.com",
   projectId: "ultras-zone",
-  storageBucket: "ultras-zone.firebasestorage.app",
+  storageBucket: "ultras-zone.firebasestorage.app",h
   messagingSenderId: "391767236040",
   appId: "1:391767236040:web:bd3486b661ea73596874fd"
 };
