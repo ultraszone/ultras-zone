@@ -70,7 +70,7 @@ async function fetchLeague(leagueId) {
         ? ESPN_LEAGUES.find(l => l.id === leagueId)?.name || "Football"
         : ESPN_LEAGUES.find(l => l.id === leagueId)?.name || "Football";
       return {
-        id: `espn_${leagueId}_${evt.id}`,
+        id: `espn_${leagueId.replace(/\./g,'_')}_${evt.id}`,
         league: leagueName,
         leagueId,
         state,
