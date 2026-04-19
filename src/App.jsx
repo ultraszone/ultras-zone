@@ -102,28 +102,23 @@ const S = `
 body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .app{max-width:430px;margin:0 auto;min-height:100vh;background:var(--bg);}
 
-/* BRICK */
+/* ULTRAS CROWD PHOTO BG */
 .brick-bg{
-  background-color:#1a0808;
   background-image:
-    repeating-linear-gradient(180deg,transparent 0px,transparent 18px,rgba(0,0,0,.65) 18px,rgba(0,0,0,.65) 22px),
-    repeating-linear-gradient(90deg,transparent 0px,transparent 38px,rgba(0,0,0,.65) 38px,rgba(0,0,0,.65) 42px),
-    repeating-linear-gradient(135deg,rgba(180,40,20,.18) 0px,rgba(120,20,10,.12) 20px,rgba(160,35,15,.15) 40px,rgba(100,15,5,.08) 60px),
-    linear-gradient(180deg,#200a0a 0%,#1a0606 100%);
-  background-size:100% 22px,42px 44px,80px 80px,100% 100%;
+    linear-gradient(rgba(8,0,0,0.72),rgba(8,0,0,0.72)),
+    url('/bg.jpg');
+  background-size:cover;
+  background-position:center top;
+  background-attachment:fixed;
 }
 
 /* SPLASH */
 .splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;
-  background-color:#1a0808;
   background-image:
-    repeating-linear-gradient(180deg,transparent 0px,transparent 18px,rgba(0,0,0,.65) 18px,rgba(0,0,0,.65) 22px),
-    repeating-linear-gradient(90deg,transparent 0px,transparent 38px,rgba(0,0,0,.65) 38px,rgba(0,0,0,.65) 42px),
-    repeating-linear-gradient(135deg,rgba(180,40,20,.2) 0px,rgba(120,20,10,.15) 20px,rgba(160,35,15,.18) 40px,rgba(100,15,5,.1) 60px),
-    radial-gradient(ellipse at 50% 40%,rgba(229,57,53,.18) 0%,transparent 60%),
-    radial-gradient(ellipse at 20% 10%,rgba(245,197,24,.12) 0%,transparent 35%),
-    radial-gradient(ellipse at 80% 10%,rgba(245,197,24,.12) 0%,transparent 35%);
-  background-size:100% 22px,42px 44px,80px 80px,100% 100%,100% 100%,100% 100%;
+    linear-gradient(rgba(8,0,0,0.68),rgba(8,0,0,0.68)),
+    url('/bg.jpg');
+  background-size:cover;
+  background-position:center top;
 }
 .splash-flares{position:absolute;top:0;left:0;right:0;height:160px;pointer-events:none;
   background:radial-gradient(ellipse 100px 100px at 15% 0%,rgba(245,197,24,.3) 0%,transparent 70%),
