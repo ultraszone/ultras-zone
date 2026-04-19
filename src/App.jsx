@@ -106,7 +106,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .brick-bg{
   background-image:
     linear-gradient(rgba(8,0,0,0.72),rgba(8,0,0,0.72)),
-    url('/bg.jpg');
+    url('/bg.jpg.jpeg');
   background-size:cover;
   background-position:center top;
   background-attachment:fixed;
@@ -116,7 +116,7 @@ body{background:var(--bg);color:var(--white);font-family:var(--font);}
 .splash{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;overflow:hidden;
   background-image:
     linear-gradient(rgba(8,0,0,0.68),rgba(8,0,0,0.68)),
-    url('/bg.jpg');
+    url('/bg.jpg.jpeg');
   background-size:cover;
   background-position:center top;
 }
