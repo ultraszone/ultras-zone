@@ -460,18 +460,36 @@ export default function UltrasZone() {
     await set(pollRef, current);
   };
 
-  // Grouped by league
+  // Grouped by league — LIVE matches always first within each league
   const filtered = activeLeague === "All" ? matches : matches.filter(m => m.league === activeLeague);
   const grouped = filtered.reduce((acc, m) => {
     if (!acc[m.league]) acc[m.league] = [];
     acc[m.league].push(m);
     return acc;
   }, {});
+
+  // Sort matches inside each league: LIVE → UPCOMING → FT
+  Object.keys(grouped).forEach(lg => {
+    grouped[lg].sort((a,b) => {
+      const order = { LIVE: 0, UPCOMING: 1, FT: 2 };
+      return (order[a.status] ?? 1) - (order[b.status] ?? 1);
+    });
+  });
+
   const leagueOrder = ["Champions League","Premier League","La Liga","Bundesliga","Serie A","Ligue 1","Süper Lig"];
+
+  // Sort leagues: leagues with LIVE matches first, then by leagueOrder
   const sortedLeagues = Object.keys(grouped).sort((a,b) => {
+    const aHasLive = grouped[a].some(m => m.status === "LIVE") ? 0 : 1;
+    const bHasLive = grouped[b].some(m => m.status === "LIVE") ? 0 : 1;
+    if (aHasLive !== bHasLive) return aHasLive - bHasLive;
+    const aHasUpcoming = grouped[a].some(m => m.status === "UPCOMING") ? 0 : 1;
+    const bHasUpcoming = grouped[b].some(m => m.status === "UPCOMING") ? 0 : 1;
+    if (aHasUpcoming !== bHasUpcoming) return aHasUpcoming - bHasUpcoming;
     const ai = leagueOrder.indexOf(a); const bi = leagueOrder.indexOf(b);
     return (ai===-1?99:ai) - (bi===-1?99:bi);
   });
+
   const allLeagueNames = ["All", ...Array.from(new Set(matches.map(m => m.league))).sort()];
 
   const today = new Date().toLocaleDateString("en-US", { weekday:"short", day:"numeric", month:"short" }).toUpperCase();
